@@ -1,0 +1,106 @@
+// raylib.disturb -- Disturb bindings for raylib via FFI shim.
+// Usage: eval(read("disturb_bindings/raylib.disturb"));
+
+rl = ffi.load("./libraylib_disturb.so",
+  "i32   rl_init_window(i32, i32, char*)",
+  "i32   rl_window_should_close()",
+  "void  rl_begin_drawing()",
+  "void  rl_end_drawing()",
+  "void  rl_close_window()",
+  "void  rl_set_target_fps(i32)",
+  "i32   rl_get_fps()",
+
+  "void  rl_clear_background(i32)",
+  "void  rl_draw_pixel(i32, i32, i32)",
+  "void  rl_draw_line(i32, i32, i32, i32, i32)",
+  "void  rl_draw_circle(i32, i32, f32, i32)",
+  "void  rl_draw_rectangle(i32, i32, i32, i32, i32)",
+  "void  rl_draw_text(char*, i32, i32, i32, i32)",
+
+  "i32   rl_is_key_down(i32)",
+  "i32   rl_is_key_pressed(i32)",
+  "i32   rl_get_key_pressed()",
+  "i32   rl_is_mouse_button_down(i32)",
+  "i32   rl_is_mouse_button_pressed(i32)",
+  "f32   rl_get_mouse_x()",
+  "f32   rl_get_mouse_y()",
+  "f32   rl_get_mouse_wheel_move()",
+
+  "intptr_t rl_load_texture(char*)",
+  "void     rl_unload_texture(intptr_t)",
+  "i32      rl_texture_width(intptr_t)",
+  "i32      rl_texture_height(intptr_t)",
+  "void     rl_draw_texture(intptr_t, i32, i32, i32)",
+  "void     rl_draw_texture_ex(intptr_t, f32, f32, f32, f32, i32)",
+  "void     rl_draw_texture_region(intptr_t, f32, f32, f32, f32, f32, f32, i32)"
+);
+
+// --- Color helper ---
+// Pack r,g,b,a (0-255 each) into 0xRRGGBBAA.
+rgba = (r, g, b, a){
+  return ((r & 255) << 24) | ((g & 255) << 16) | ((b & 255) << 8) | (a & 255);
+};
+
+// Predefined colors
+COLOR_WHITE     = rgba(255, 255, 255, 255);
+COLOR_BLACK     = rgba(0, 0, 0, 255);
+COLOR_RED       = rgba(230, 41, 55, 255);
+COLOR_GREEN     = rgba(0, 228, 48, 255);
+COLOR_BLUE      = rgba(0, 121, 241, 255);
+COLOR_YELLOW    = rgba(253, 249, 0, 255);
+COLOR_DARKGRAY  = rgba(80, 80, 80, 255);
+COLOR_LIGHTGRAY = rgba(200, 200, 200, 255);
+COLOR_RAYWHITE  = rgba(245, 245, 245, 255);
+
+// --- Key constants ---
+KEY_ESCAPE = 256;
+KEY_SPACE  = 32;
+KEY_UP     = 265;
+KEY_DOWN   = 264;
+KEY_LEFT   = 263;
+KEY_RIGHT  = 262;
+KEY_W      = 87;
+KEY_A      = 65;
+KEY_S      = 83;
+KEY_D      = 68;
+
+// --- Friendly wrapper functions ---
+initWindow = (w, h, title){ return rl.rl_init_window(w, h, title); };
+shouldClose = (){ return rl.rl_window_should_close(); };
+begin = (){ rl.rl_begin_drawing(); };
+end = (){ rl.rl_end_drawing(); };
+closeWindow = (){ rl.rl_close_window(); };
+setTargetFPS = (fps){ rl.rl_set_target_fps(fps); };
+getFPS = (){ return rl.rl_get_fps(); };
+
+clear = (color){ rl.rl_clear_background(color); };
+drawPixel = (x, y, color){ rl.rl_draw_pixel(x, y, color); };
+drawLine = (x1, y1, x2, y2, color){ rl.rl_draw_line(x1, y1, x2, y2, color); };
+drawCircle = (cx, cy, r, color){ rl.rl_draw_circle(cx, cy, r, color); };
+drawRect = (x, y, w, h, color){ rl.rl_draw_rectangle(x, y, w, h, color); };
+drawText = (text, x, y, size, color){ rl.rl_draw_text(text, x, y, size, color); };
+
+isKeyDown = (key){ return rl.rl_is_key_down(key); };
+isKeyPressed = (key){ return rl.rl_is_key_pressed(key); };
+getKeyPressed = (){ return rl.rl_get_key_pressed(); };
+isMouseDown = (btn){ return rl.rl_is_mouse_button_down(btn); };
+isMousePressed = (btn){ return rl.rl_is_mouse_button_pressed(btn); };
+mouseX = (){ return rl.rl_get_mouse_x(); };
+mouseY = (){ return rl.rl_get_mouse_y(); };
+mouseWheel = (){ return rl.rl_get_mouse_wheel_move(); };
+
+// --- Texture object factory ---
+// Returns a table with methods for drawing and cleanup.
+loadTexture = (path){
+  local.ptr = rl.rl_load_texture(path);
+  local.handle = local.ptr;
+  return {
+    ptr = local.handle,
+    w = (){ return rl.rl_texture_width(this.ptr); },
+    h = (){ return rl.rl_texture_height(this.ptr); },
+    draw = (x, y, tint){ rl.rl_draw_texture(this.ptr, x, y, tint); },
+    drawEx = (x, y, rot, scale, tint){ rl.rl_draw_texture_ex(this.ptr, x, y, rot, scale, tint); },
+    drawRegion = (sx, sy, sw, sh, dx, dy, tint){ rl.rl_draw_texture_region(this.ptr, sx, sy, sw, sh, dx, dy, tint); },
+    free = (){ rl.rl_unload_texture(this.ptr); }
+  };
+};
