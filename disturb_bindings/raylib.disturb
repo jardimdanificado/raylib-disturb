@@ -1,7 +1,13 @@
 // raylib.disturb -- Disturb bindings for raylib via FFI shim.
 // Usage: eval(read("disturb_bindings/raylib.disturb"));
 
-rl = ffi.load("./libraylib_disturb.so",
+shim_path = read("disturb_bindings/shim_path.bin");
+if (shim_path == null) {
+  // Fallback for manual runs where make did not generate shim_path.bin.
+  shim_path = "./libraylib_disturb.so";
+}
+
+rl = ffi.load(shim_path,
   "i32   rl_init_window(i32, i32, char*)",
   "i32   rl_window_should_close()",
   "void  rl_begin_drawing()",

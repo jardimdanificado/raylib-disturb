@@ -4,26 +4,33 @@
 
 eval(read("disturb_bindings/raylib.disturb"));
 
-initWindow(800, 450, "Disturb + raylib: Texture");
-setTargetFPS(60);
-
-tex = loadTexture("assets/test.png");
-println("Loaded texture: " + tex.w() + "x" + tex.h());
-
-while (shouldClose() == 0 && isKeyPressed(KEY_ESCAPE) == 0) {
-  begin();
-  clear(COLOR_RAYWHITE);
-
-  // Draw texture centered
-  tx = 400 - tex.w() / 2;
-  ty = 225 - tex.h() / 2;
-  tex.draw(tx, ty, COLOR_WHITE);
-
-  drawText("Texture demo - press ESC to exit", 10, 10, 20, COLOR_DARKGRAY);
-
-  end();
+asset_path = "assets/test.png";
+if (system("test -f assets/test.png") != 0) {
+  println("Missing texture asset: " + asset_path);
+  println("Add any PNG at assets/test.png, then rerun: make run_texture");
 }
+else {
+  initWindow(800, 450, "Disturb + raylib: Texture");
+  setTargetFPS(60);
 
-tex.free();
-closeWindow();
-println("Done.");
+  tex = loadTexture(asset_path);
+  println("Loaded texture: " + tex.w() + "x" + tex.h());
+
+  while (shouldClose() == 0 && isKeyPressed(KEY_ESCAPE) == 0) {
+    begin();
+    clear(COLOR_RAYWHITE);
+
+    // Draw texture centered
+    tx = 400 - tex.w() / 2;
+    ty = 225 - tex.h() / 2;
+    tex.draw(tx, ty, COLOR_WHITE);
+
+    drawText("Texture demo - press ESC to exit", 10, 10, 20, COLOR_DARKGRAY);
+
+    end();
+  }
+
+  tex.free();
+  closeWindow();
+  println("Done.");
+}

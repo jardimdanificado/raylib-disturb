@@ -1,0 +1,6 @@
+// smoke_load.dist -- no-window smoke test for FFI shim loading.
+
+eval(read("disturb_bindings/raylib.disturb"));
+
+fps = getFPS();
+println("Smoke test OK: shim loaded, getFPS()=" + fps);
