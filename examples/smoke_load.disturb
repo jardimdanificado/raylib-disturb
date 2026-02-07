@@ -1,4 +1,4 @@
-// smoke_load.dist -- no-window smoke test for FFI shim loading.
+// smoke_load.disturb -- no-window smoke test for FFI shim loading.
 
 eval(read("disturb_bindings/raylib.disturb"));
 

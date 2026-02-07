@@ -2,8 +2,10 @@ CC       ?= gcc
 CFLAGS   := -O2 -Wall -Wextra -fPIC
 LDFLAGS  :=
 CMAKE    ?= cmake
+CLONE_DEPTH ?= 1
 
 RAYLIB_SRC     := raylib
+RAYLIB_REPO    ?= https://github.com/raysan5/raylib.git
 RAYLIB_BUILD   := $(RAYLIB_SRC)/build
 RAYLIB_LIB     := $(RAYLIB_BUILD)/raylib/libraylib.a
 
@@ -13,14 +15,37 @@ SHIM_SO        := libraylib_disturb.so
 SHIM_PATH_BIN  := disturb_bindings/shim_path.bin
 
 DISTURB_DIR    := disturb
+DISTURB_REPO   ?= https://github.com/jardimdanificado/disturb.git
 DISTURB_BIN    := $(DISTURB_DIR)/disturb
 
 # System libs needed by raylib on Linux (X11 desktop)
 RAYLIB_SYSLIBS := -lm -lpthread -ldl -lrt -lX11
 
-.PHONY: all raylib shim disturb clean run_smoke run_hello run_texture run_texture_stress
+.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean run_smoke run_hello run_texture run_texture_stress
 
-all: raylib shim disturb $(SHIM_PATH_BIN)
+all: deps raylib shim disturb $(SHIM_PATH_BIN)
+
+clone: deps
+
+deps: raylib_repo disturb_repo
+
+raylib_repo:
+	@if [ ! -d "$(RAYLIB_SRC)" ]; then \
+		git clone --depth "$(CLONE_DEPTH)" "$(RAYLIB_REPO)" "$(RAYLIB_SRC)"; \
+	elif [ -d "$(RAYLIB_SRC)/.git" ]; then \
+		echo "$(RAYLIB_SRC) already present"; \
+	else \
+		echo "$(RAYLIB_SRC) exists but is not a git clone; skipping clone"; \
+	fi
+
+disturb_repo:
+	@if [ ! -d "$(DISTURB_DIR)" ]; then \
+		git clone --depth "$(CLONE_DEPTH)" "$(DISTURB_REPO)" "$(DISTURB_DIR)"; \
+	elif [ -d "$(DISTURB_DIR)/.git" ]; then \
+		echo "$(DISTURB_DIR) already present"; \
+	else \
+		echo "$(DISTURB_DIR) exists but is not a git clone; skipping clone"; \
+	fi
 
 # ---------- raylib (static, built with CMake) ----------
 raylib: $(RAYLIB_LIB)
@@ -64,20 +89,23 @@ $(DISTURB_BIN):
 
 # ---------- run examples ----------
 run_smoke: all
-	./$(DISTURB_BIN) examples/smoke_load.dist
+	./$(DISTURB_BIN) examples/smoke_load.disturb
 
 run_hello: all
-	DISTURB_HEADLESS=1 ./$(DISTURB_BIN) examples/hello_window.dist
+	DISTURB_HEADLESS=1 ./$(DISTURB_BIN) examples/hello_window.disturb
 
 run_texture: all
 	./$(DISTURB_BIN) examples/texture.disturb
 
 run_texture_stress: all
-	./$(DISTURB_BIN) examples/texture_stress.dist
+	DISTURB_HEADLESS=1 ./$(DISTURB_BIN) examples/texture_stress.disturb
 
 # ---------- clean ----------
 clean:
 	rm -rf $(RAYLIB_BUILD)
 	rm -f $(SHIM_SO)
 	rm -f $(SHIM_PATH_BIN)
-	$(MAKE) -C $(DISTURB_DIR) clean
+	@if [ -d "$(RAYLIB_SRC)/src" ]; then $(MAKE) -C $(RAYLIB_SRC)/src clean; fi
+	@if [ -d "$(DISTURB_DIR)" ]; then $(MAKE) -C $(DISTURB_DIR) clean; fi
+	rm -rf $(RAYLIB_SRC)
+	rm -rf $(DISTURB_DIR)

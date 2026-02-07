@@ -36,6 +36,7 @@ float rl_get_mouse_wheel_move(void);
 
 /* Texture handles (opaque pointers returned/accepted as intptr_t for FFI) */
 intptr_t rl_load_texture(const char *path);
+intptr_t rl_load_texture_n(const char *path, int path_len);
 void     rl_unload_texture(intptr_t tex);
 int      rl_texture_width(intptr_t tex);
 int      rl_texture_height(intptr_t tex);

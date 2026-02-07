@@ -1,8 +1,11 @@
-// texture_stress.dist -- repeated load/draw/unload stress test.
+// texture_stress.disturb -- repeated load/draw/unload stress test.
 
 asset_path = "assets/test.png";
 
-if (system("test -f assets/test.png") != 0) {
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0) {
+  println("texture_stress skipped (DISTURB_HEADLESS set)");
+}
+else if (system("test -f assets/test.png") != 0) {
   println("Missing texture asset: " + asset_path);
   println("Add any PNG at assets/test.png, then rerun: make run_texture_stress");
 }

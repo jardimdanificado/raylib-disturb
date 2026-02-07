@@ -1,38 +1,28 @@
-// hello_window.disturb -- Opens a window and draws text.
-// Run: make run_hello
+// hello_window.disturb -- minimal hello window test.
+// Auto-closes after a short run to keep make target deterministic.
 
-eval(read("disturb_bindings/raylib.disturb"));
-
-initWindow(800, 450, "Disturb + raylib");
-setTargetFPS(60);
-
-frame = 0;
-
-while (shouldClose() == 0 && isKeyPressed(KEY_ESCAPE) == 0) {
-  frame = frame + 1;
-
-  begin();
-  clear(COLOR_RAYWHITE);
-
-  drawText("Hello from Disturb + raylib!", 200, 160, 30, COLOR_DARKGRAY);
-
-  fps_text = "FPS: " + getFPS();
-  drawText(fps_text, 10, 10, 20, COLOR_GREEN);
-
-  drawText("Frame: " + frame, 10, 40, 20, COLOR_BLUE);
-
-  // Draw some shapes
-  drawRect(350, 250, 100, 60, COLOR_RED);
-  drawCircle(400, 350, 30.0, COLOR_BLUE);
-  drawLine(300, 400, 500, 400, COLOR_DARKGRAY);
-
-  // Show mouse position
-  mx = mouseX();
-  my = mouseY();
-  drawText("Mouse: " + mx + ", " + my, 10, 420, 16, COLOR_DARKGRAY);
-
-  end();
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0) {
+  println("hello_window skipped (DISTURB_HEADLESS set)");
 }
+else {
+  eval(read("disturb_bindings/raylib.disturb"));
 
-closeWindow();
-println("Window closed.");
+  initWindow(800, 450, "Disturb + raylib: Hello");
+  setTargetFPS(60);
+
+  frame = 0;
+  max_frames = 180;
+
+  while (shouldClose() == 0 && isKeyPressed(KEY_ESCAPE) == 0 && frame < max_frames) {
+    frame = frame + 1;
+
+    begin();
+    clear(COLOR_RAYWHITE);
+    drawText("Hello from Disturb + raylib", 170, 190, 34, COLOR_DARKGRAY);
+    drawText("Frame: " + frame, 10, 10, 20, COLOR_BLUE);
+    end();
+  }
+
+  closeWindow();
+  println("hello_window finished after " + frame + " frames");
+}

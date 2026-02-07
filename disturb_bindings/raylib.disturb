@@ -33,6 +33,7 @@ rl = ffi.load(shim_path,
   "f32   rl_get_mouse_wheel_move()",
 
   "intptr_t rl_load_texture(char*)",
+  "intptr_t rl_load_texture_n(char*, i32)",
   "void     rl_unload_texture(intptr_t)",
   "i32      rl_texture_width(intptr_t)",
   "i32      rl_texture_height(intptr_t)",
@@ -98,7 +99,8 @@ mouseWheel = (){ return rl.rl_get_mouse_wheel_move(); };
 // --- Texture object factory ---
 // Returns a table with methods for drawing and cleanup.
 loadTexture = (path){
-  local.ptr = rl.rl_load_texture(path);
+  local.path_len = path.size;
+  local.ptr = rl.rl_load_texture_n(path, local.path_len);
   local.handle = local.ptr;
   return {
     ptr = local.handle,

@@ -45,7 +45,7 @@ make run_texture_stress # Repeated load/draw/unload texture test
 ```
 
 `make run_hello` sets `DISTURB_HEADLESS=1` to keep CI/headless environments deterministic.
-Run `./disturb/disturb examples/hello_window.dist` directly for the interactive window loop.
+Run `./disturb/disturb examples/hello_window.disturb` directly for the interactive window loop.
 
 Texture-based examples require `assets/test.png`.
 Place any small PNG at that path:

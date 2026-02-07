@@ -21,6 +21,17 @@ static Texture2D *tex_ptr(intptr_t handle)
     return (Texture2D *)(void *)handle;
 }
 
+/* Disturb strings are not guaranteed to be NUL-terminated. */
+static char *copy_string_n(const char *s, int len)
+{
+    if (!s || len < 0) return NULL;
+    char *out = (char *)malloc((size_t)len + 1);
+    if (!out) return NULL;
+    for (int i = 0; i < len; i++) out[i] = s[i];
+    out[len] = '\0';
+    return out;
+}
+
 /* ================================================================
    Window / timing
    ================================================================ */
@@ -148,6 +159,22 @@ intptr_t rl_load_texture(const char *path)
     Texture2D *t = (Texture2D *)malloc(sizeof(Texture2D));
     if (!t) return 0;
     *t = LoadTexture(path);
+    return (intptr_t)(void *)t;
+}
+
+intptr_t rl_load_texture_n(const char *path, int path_len)
+{
+    char *safe_path = copy_string_n(path, path_len);
+    if (!safe_path) return 0;
+
+    Texture2D *t = (Texture2D *)malloc(sizeof(Texture2D));
+    if (!t) {
+        free(safe_path);
+        return 0;
+    }
+
+    *t = LoadTexture(safe_path);
+    free(safe_path);
     return (intptr_t)(void *)t;
 }
 
