@@ -1,0 +1,47 @@
+[
+  {
+    "name": "core_basic_window",
+    "status": "PASS",
+    "tier": 1,
+    "pixel_equal": 1.0,
+    "mae": 0.0,
+    "ssim": 1.0,
+    "reason": null
+  },
+  {
+    "name": "shapes_logo_raylib",
+    "status": "PASS",
+    "tier": 1,
+    "pixel_equal": 1.0,
+    "mae": 0.0,
+    "ssim": 1.0,
+    "reason": null
+  },
+  {
+    "name": "shapes_basic_shapes",
+    "status": "PASS",
+    "tier": 1,
+    "pixel_equal": 1.0,
+    "mae": 0.0,
+    "ssim": 1.0,
+    "reason": null
+  },
+  {
+    "name": "textures_logo_raylib",
+    "status": "PASS",
+    "tier": 1,
+    "pixel_equal": 1.0,
+    "mae": 0.0,
+    "ssim": 1.0,
+    "reason": null
+  },
+  {
+    "name": "shapes_colors_palette",
+    "status": "PASS",
+    "tier": 1,
+    "pixel_equal": 0.972475,
+    "mae": 1.613,
+    "ssim": 0.988043,
+    "reason": null
+  }
+]

@@ -1,0 +1,71 @@
+// Visual regression: faithful translation of raylib/examples/shapes/shapes_colors_palette.c
+// Window: 800x450, 21 colored rectangles + text, no assets, no input.
+// Without mouse/key input, all rects render at full opacity, no labels shown.
+
+eval(read("generated/raylib_ffi_phase3.dist"));
+
+RAYWHITE = 0xF5F5F5FF;
+BLACK    = 0x000000FF;
+GRAY     = 0x828282FF;
+
+// Build color array element-by-element (Disturb array literals can't hold variable refs)
+colors = [0];
+colors.size = 21;
+colors[0]  = 0x505050FF; // DARKGRAY
+colors[1]  = 3189848063; // MAROON (0xBE2137FF decimal: hex E-exponent bug)
+colors[2]  = 0xFFA100FF; // ORANGE
+colors[3]  = 0x00752CFF; // DARKGREEN
+colors[4]  = 0x0052ACFF; // DARKBLUE
+colors[5]  = 1881112319; // DARKPURPLE (0x701F7EFF decimal: hex E-exponent bug)
+colors[6]  = 0x4C3F2FFF; // DARKBROWN
+colors[7]  = 0x828282FF; // GRAY
+colors[8]  = 3861460991; // RED (0xE62937FF decimal: hex E-exponent bug)
+colors[9]  = 0xFFCB00FF; // GOLD
+colors[10] = 10366975; // LIME (0x009E2FFF decimal: hex E-exponent bug)
+colors[11] = 0x0079F1FF; // BLUE
+colors[12] = 2268905215; // VIOLET (0x873CBEFF decimal: hex E-exponent bug)
+colors[13] = 0x7F6A4FFF; // BROWN
+colors[14] = 0xC8C8C8FF; // LIGHTGRAY
+colors[15] = 0xFF6DC2FF; // PINK
+colors[16] = 0xFDF900FF; // YELLOW
+colors[17] = 14954751; // GREEN (0x00E430FF decimal: hex E-exponent bug)
+colors[18] = 0x66BFFFFF; // SKYBLUE
+colors[19] = 0xC87AFFFF; // PURPLE
+colors[20] = 0xD3B083FF; // BEIGE
+
+// C formula: colorsRecs[i].x = 20.0f + 100.0f*(i%7) + 10.0f*(i%7)
+//            colorsRecs[i].y = 80.0f + 100.0f*((float)i/7) + 10.0f*((float)i/7)
+// Simplified: x = 20.0 + 110.0*(i%7), y = 80.0 + 110.0*(i/7.0)
+// Note: y uses float division (i/7.0), creating staggered rows within each group.
+// C uses DrawRectangleRec (float coords); we use rl2_DrawRectangleRec to match.
+
+frames = 120;
+output = "out/disturb/shapes_colors_palette.png";
+
+raylib_phase3.rl2_InitWindow(800, 450, "raylib [shapes] example - colors palette");
+raylib_phase3.rl2_SetTargetFPS(60);
+
+rf = 0;
+while (raylib_phase3.rl2_WindowShouldClose() == 0 && rf < frames) {
+  raylib_phase3.rl2_BeginDrawing();
+  raylib_phase3.rl2_ClearBackground(RAYWHITE);
+
+  raylib_phase3.rl2_DrawText("raylib colors palette", 28, 42, 20, BLACK);
+  raylib_phase3.rl2_DrawText("press SPACE to see all colors", 620, 410, 10, GRAY);
+
+  // Draw 21 colored rectangles using exact C formula with float division
+  i = 0;
+  while (i < 21) {
+    col = i % 7;
+    rx = 20.0 + 110.0 * col;
+    ry = 80.0 + 110.0 * i / 7.0;
+    raylib_phase3.rl2_DrawRectangleRec(rx, ry, 100.0, 100.0, colors[i]);
+    i = i + 1;
+  }
+
+  raylib_phase3.rl2_EndDrawing();
+  rf = rf + 1;
+}
+
+raylib_phase3.rl2_TakeScreenshot(output);
+raylib_phase3.rl2_CloseWindow();

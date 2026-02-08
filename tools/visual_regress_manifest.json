@@ -1,0 +1,57 @@
+[
+  {
+    "name": "core_basic_window",
+    "c_source": "raylib/examples/core/core_basic_window.c",
+    "disturb_source": "visual_regress/core_basic_window.dist",
+    "width": 800,
+    "height": 450,
+    "frames": 120,
+    "tier": 1,
+    "asset_cwd": null,
+    "skip_reason": null
+  },
+  {
+    "name": "shapes_logo_raylib",
+    "c_source": "raylib/examples/shapes/shapes_logo_raylib.c",
+    "disturb_source": "visual_regress/shapes_logo_raylib.dist",
+    "width": 800,
+    "height": 450,
+    "frames": 120,
+    "tier": 1,
+    "asset_cwd": null,
+    "skip_reason": null
+  },
+  {
+    "name": "shapes_basic_shapes",
+    "c_source": "raylib/examples/shapes/shapes_basic_shapes.c",
+    "disturb_source": "visual_regress/shapes_basic_shapes.dist",
+    "width": 800,
+    "height": 450,
+    "frames": 120,
+    "tier": 1,
+    "asset_cwd": null,
+    "skip_reason": null
+  },
+  {
+    "name": "textures_logo_raylib",
+    "c_source": "raylib/examples/textures/textures_logo_raylib.c",
+    "disturb_source": "visual_regress/textures_logo_raylib.dist",
+    "width": 800,
+    "height": 450,
+    "frames": 120,
+    "tier": 1,
+    "asset_cwd": "raylib/examples/textures",
+    "skip_reason": null
+  },
+  {
+    "name": "shapes_colors_palette",
+    "c_source": "raylib/examples/shapes/shapes_colors_palette.c",
+    "disturb_source": "visual_regress/shapes_colors_palette.dist",
+    "width": 800,
+    "height": 450,
+    "frames": 120,
+    "tier": 1,
+    "asset_cwd": null,
+    "skip_reason": null
+  }
+]

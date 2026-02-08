@@ -1,0 +1,25 @@
+// Visual regression: faithful translation of raylib/examples/core/core_basic_window.c
+// Window: 800x450, static text, no assets, no input.
+
+eval(read("generated/raylib_ffi_phase3.dist"));
+
+RAYWHITE  = 0xF5F5F5FF;
+LIGHTGRAY = 0xC8C8C8FF;
+
+frames = 120;
+output = "out/disturb/core_basic_window.png";
+
+raylib_phase3.rl2_InitWindow(800, 450, "raylib [core] example - basic window");
+raylib_phase3.rl2_SetTargetFPS(60);
+
+rf = 0;
+while (raylib_phase3.rl2_WindowShouldClose() == 0 && rf < frames) {
+  raylib_phase3.rl2_BeginDrawing();
+  raylib_phase3.rl2_ClearBackground(RAYWHITE);
+  raylib_phase3.rl2_DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+  raylib_phase3.rl2_EndDrawing();
+  rf = rf + 1;
+}
+
+raylib_phase3.rl2_TakeScreenshot(output);
+raylib_phase3.rl2_CloseWindow();

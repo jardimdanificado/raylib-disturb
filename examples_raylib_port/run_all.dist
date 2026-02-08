@@ -290,7 +290,7 @@ else if (status == 0) { skip_count = skip_count + 1; }
 else { fail_count = fail_count + 1; }
 
 println("\n=== raylib official ports summary ===");
-println("PASS: " + pass_count);
+println("PASS_TOTAL: " + pass_count);
 println("PASS_HEADLESS: " + pass_headless_count);
 println("PASS_WINDOWED: " + pass_windowed_count);
 println("SKIP: " + skip_count);

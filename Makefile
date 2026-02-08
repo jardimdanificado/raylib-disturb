@@ -17,6 +17,10 @@ SHIM3_SRC      := generated/raylib_shim_phase3.c
 SHIM3_HDR      := generated/raylib_shim_phase3.h
 SHIM3_SO       := libraylib_disturb_phase3.so
 SHIM3_PATH_BIN := disturb_bindings/shim_path_phase3.bin
+PORTED_MANIFEST := examples_raylib_port/manifest.json
+PORTED_TOOL    := tools/ported_examples_tool.py
+PORTED_RUN_ALL := examples_raylib_port/run_all.dist
+PORTED_RUN_FAST := examples_raylib_port/run_fast.dist
 
 DISTURB_DIR    := disturb
 DISTURB_REPO   ?= https://github.com/jardimdanificado/disturb.git
@@ -25,7 +29,7 @@ DISTURB_BIN    := $(DISTURB_DIR)/disturb
 # System libs needed by raylib on Linux (X11 desktop)
 RAYLIB_SYSLIBS := -lm -lpthread -ldl -lrt -lX11
 
-.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean deep_clean assets_note run_smoke run_hello run_texture run_texture_stress run_texture_pro run_procedural run_measure_text run_camera2d run_quick_tests run_new_examples run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera run_original_examples raylib_inventory raylib_phase2 raylib_phase3 shim_phase3 run_phase3_smoke run_phase6_conformance verify_phase3_symbols run_ported_examples run_examples_user clean_phase3
+.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean deep_clean assets_note run_smoke run_hello run_texture run_texture_stress run_texture_pro run_procedural run_measure_text run_camera2d run_quick_tests run_new_examples run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera run_original_examples raylib_inventory raylib_phase2 raylib_phase3 shim_phase3 run_phase3_smoke run_phase6_conformance verify_phase3_symbols sync_ported_examples run_ported_examples run_ported_examples_fast run_ported_examples_list run_examples_user test_headless test_windowed test_all clean_phase3 visual_regress_fast visual_regress_all visual_regress_clean
 
 all: deps raylib shim disturb $(SHIM_PATH_BIN)
 
@@ -173,6 +177,7 @@ shim_phase3: raylib_phase3 raylib
 run_phase3_smoke: shim_phase3 disturb
 	./$(DISTURB_BIN) examples_phase3/smoke_load.dist
 	./$(DISTURB_BIN) examples_phase3/test_ptr_roundtrip.dist
+	./$(DISTURB_BIN) examples_phase3/test_str_roundtrip.dist
 	@out="$$(./$(DISTURB_BIN) examples_phase3/smoke_pure.dist 2>&1)"; \
 	echo "$$out"; \
 	if printf "%s\n" "$$out" | rg -q "(^FAIL |ffi\\.load failed|bytecode error|unknown native)"; then exit 1; fi
@@ -188,8 +193,17 @@ run_phase6_conformance: shim_phase3 disturb
 verify_phase3_symbols: shim_phase3
 	python tools/verify_phase3_symbols.py
 
-run_ported_examples: shim_phase3 disturb
-	./$(DISTURB_BIN) examples_raylib_port/run_all.dist
+sync_ported_examples: $(PORTED_MANIFEST) $(PORTED_TOOL)
+	python $(PORTED_TOOL) --generate
+
+run_ported_examples: shim_phase3 disturb sync_ported_examples
+	./$(DISTURB_BIN) $(PORTED_RUN_ALL)
+
+run_ported_examples_fast: shim_phase3 disturb sync_ported_examples
+	./$(DISTURB_BIN) $(PORTED_RUN_FAST)
+
+run_ported_examples_list: $(PORTED_MANIFEST) $(PORTED_TOOL)
+	python $(PORTED_TOOL) --list
 
 run_examples_user: shim_phase3 disturb
 	./$(DISTURB_BIN) examples_user/headless_offscreen.dist
@@ -198,6 +212,31 @@ run_examples_user: shim_phase3 disturb
 	./$(DISTURB_BIN) examples_user/texture_draw.dist
 	./$(DISTURB_BIN) examples_user/text_render.dist
 	./$(DISTURB_BIN) examples_user/camera2d.dist
+
+test_headless:
+	$(MAKE) -s raylib_phase2
+	$(MAKE) -s raylib_phase3
+	$(MAKE) -s shim_phase3
+	$(MAKE) -s verify_phase3_symbols
+	$(MAKE) -s run_phase3_smoke
+	$(MAKE) -s run_phase6_conformance
+	$(MAKE) -s run_ported_examples
+
+test_all:
+	$(MAKE) -s test_headless
+	$(MAKE) -s run_examples_user
+
+test_windowed:
+	@if [ "$$(uname -s)" != "Linux" ]; then \
+		echo "test_windowed is Linux-only"; \
+		exit 0; \
+	fi
+	@if ! command -v xvfb-run >/dev/null 2>&1; then \
+		echo "xvfb-run not found. Install xvfb to run windowed tests."; \
+		exit 1; \
+	fi
+	$(MAKE) -s test_headless
+	xvfb-run -a -s "-screen 0 1280x720x24" $(MAKE) -s run_ported_examples run_examples_user
 
 assets_note:
 	@echo "Required: assets/test.png (for texture_pro/texture demos)"
@@ -221,3 +260,12 @@ clean_phase3:
 	rm -f generated/raylib_shim_phase3.h
 	rm -f generated/raylib_shim_phase3.c
 	rm -f generated/raylib_ffi_phase3.dist
+
+visual_regress_fast: shim_phase3 disturb
+	python tools/visual_regress.py --tier1
+
+visual_regress_all: shim_phase3 disturb
+	python tools/visual_regress.py --all
+
+visual_regress_clean:
+	rm -rf out/ bin/c_regress/

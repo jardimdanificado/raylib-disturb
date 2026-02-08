@@ -4661,3 +4661,26 @@ int32_t rl_ptr_hash(void* p) {
     uintptr_t v = (uintptr_t)p;
     return (int32_t)(uint32_t)(v ^ (v >> 32));
 }
+
+int32_t rl_str_len(char* s) {
+    if (!s) return -1;
+    return (int32_t)strlen(s);
+}
+
+int32_t rl_str_hash(char* s) {
+    if (!s) return 0;
+    uint32_t h = 2166136261u;
+    for (const char* p = s; *p; p++) {
+        h ^= (uint32_t)(unsigned char)*p;
+        h *= 16777619u;
+    }
+    return (int32_t)h;
+}
+
+int32_t rl_str_check_nul(char* s, int32_t max) {
+    if (!s || max <= 0) return 0;
+    for (int32_t i = 0; i < max; i++) {
+        if (s[i] == '\0') return 1;
+    }
+    return 0;
+}

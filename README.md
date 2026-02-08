@@ -189,3 +189,42 @@ make run_phase6_conformance
 make run_ported_examples
 make run_examples_user
 ```
+
+## Testing
+One-command local workflows:
+```bash
+make test_all
+make test_headless
+make test_windowed   # Linux only, requires xvfb-run
+```
+
+Ported examples quality-of-life:
+```bash
+make run_ported_examples_list
+make run_ported_examples_fast
+make run_ported_examples
+```
+
+Ported examples are defined in `examples_raylib_port/manifest.json` and runner files are generated from it.
+Suite summary includes:
+- `PASS_TOTAL`
+- `PASS_HEADLESS`
+- `PASS_WINDOWED`
+- `SKIP`
+- `FAIL`
+
+The runner exits non-zero when any `FAIL` occurs.
+
+To reduce SKIPs for asset-dependent examples, add:
+- `assets/test.png`
+- `assets/font.ttf`
+- `assets/model.obj`
+- `assets/test.wav`
+- `assets/test.ogg`
+
+## CI Notes
+- Linux headless CI runs `make -s test_headless`.
+- Linux windowed CI runs `make -s test_windowed` under Xvfb (`1280x720x24`).
+- macOS CI prefers `make -s test_headless` and falls back to a build+core-test subset if needed.
+- Windows CI runs a headless-like subset (build, symbol verification, smoke, conformance); windowed suites are intentionally skipped.
+- ALSA warnings can appear in CI logs when no audio device is available; examples should SKIP gracefully.

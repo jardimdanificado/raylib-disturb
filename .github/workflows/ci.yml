@@ -1,0 +1,177 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  linux-headless:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            python3 \
+            libffi-dev \
+            ripgrep \
+            libx11-dev \
+            libxcursor-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxi-dev \
+            libgl1-mesa-dev \
+            libasound2-dev
+
+      - name: Run headless pipeline
+        run: |
+          mkdir -p logs
+          set -o pipefail
+          make -s test_headless 2>&1 | tee logs/linux-headless.log
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-headless-failure-artifacts
+          if-no-files-found: ignore
+          path: |
+            logs/*.log
+            generated/plan.json
+            generated/report_phase2.md
+            generated/report_phase3.md
+            generated/raylib_shim_phase3.h
+            generated/raylib_shim_phase3.c
+            generated/raylib_ffi_phase3.dist
+
+  linux-xvfb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            python3 \
+            libffi-dev \
+            ripgrep \
+            xvfb \
+            libx11-dev \
+            libxcursor-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxi-dev \
+            libgl1-mesa-dev \
+            libasound2-dev
+
+      - name: Run windowed pipeline under Xvfb
+        run: |
+          mkdir -p logs
+          set -o pipefail
+          make -s test_windowed 2>&1 | tee logs/linux-xvfb.log
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-xvfb-failure-artifacts
+          if-no-files-found: ignore
+          path: |
+            logs/*.log
+            generated/plan.json
+            generated/report_phase2.md
+            generated/raylib_shim_phase3.h
+            generated/raylib_shim_phase3.c
+            generated/raylib_ffi_phase3.dist
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install cmake pkg-config libffi ripgrep
+
+      - name: Run macOS pipeline (headless preferred)
+        run: |
+          mkdir -p logs
+          set -o pipefail
+          if make -s test_headless 2>&1 | tee logs/macos-test_headless.log; then
+            echo "test_headless passed"
+          else
+            echo "test_headless failed; running fallback subset"
+            make -s raylib_phase2 raylib_phase3 shim_phase3 verify_phase3_symbols run_phase3_smoke run_phase6_conformance 2>&1 | tee logs/macos-fallback.log
+          fi
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-failure-artifacts
+          if-no-files-found: ignore
+          path: |
+            logs/*.log
+            generated/plan.json
+            generated/report_phase2.md
+            generated/raylib_shim_phase3.h
+            generated/raylib_shim_phase3.c
+            generated/raylib_ffi_phase3.dist
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            base-devel
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-libffi
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-ripgrep
+
+      - name: Run Windows subset
+        run: |
+          mkdir -p logs
+          export PATH="/mingw64/bin:$PATH"
+          set -o pipefail
+          make -s raylib_phase2 raylib_phase3 shim_phase3 verify_phase3_symbols run_phase3_smoke run_phase6_conformance 2>&1 | tee logs/windows-subset.log
+          echo "Windowed suite intentionally skipped on Windows CI."
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-failure-artifacts
+          if-no-files-found: ignore
+          path: |
+            logs/*.log
+            generated/plan.json
+            generated/report_phase2.md
+            generated/raylib_shim_phase3.h
+            generated/raylib_shim_phase3.c
+            generated/raylib_ffi_phase3.dist

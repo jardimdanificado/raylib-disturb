@@ -1,0 +1,46 @@
+[
+  {"name":"core_basic_window","category":"core","path":"examples_raylib_port/core_basic_window.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_input_keys","category":"core","path":"examples_raylib_port/core_input_keys.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_input_mouse","category":"core","path":"examples_raylib_port/core_input_mouse.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_input_mouse_wheel","category":"core","path":"examples_raylib_port/core_input_mouse_wheel.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_input_gamepad","category":"core","path":"examples_raylib_port/core_input_gamepad.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"core_random_values","category":"core","path":"examples_raylib_port/core_random_values.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_scissor_test","category":"core","path":"examples_raylib_port/core_scissor_test.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_window_title","category":"core","path":"examples_raylib_port/core_window_title.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_fps_counter","category":"core","path":"examples_raylib_port/core_fps_counter.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_timing","category":"core","path":"examples_raylib_port/core_timing.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"core_compute_hash","category":"core","path":"examples_raylib_port/core_compute_hash.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"core_directory_files","category":"core","path":"examples_raylib_port/core_directory_files.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"core_2d_camera","category":"core","path":"examples_raylib_port/core_2d_camera.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"core_3d_camera_mode","category":"core","path":"examples_raylib_port/core_3d_camera_mode.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+
+  {"name":"shapes_basic_shapes","category":"shapes","path":"examples_raylib_port/shapes_basic_shapes.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"shapes_bouncing_ball","category":"shapes","path":"examples_raylib_port/shapes_bouncing_ball.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"shapes_collision_area","category":"shapes","path":"examples_raylib_port/shapes_collision_area.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"shapes_colors_palette","category":"shapes","path":"examples_raylib_port/shapes_colors_palette.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"shapes_lines_bezier","category":"shapes","path":"examples_raylib_port/shapes_lines_bezier.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"shapes_logo_raylib","category":"shapes","path":"examples_raylib_port/shapes_logo_raylib.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"shapes_rectangle_scaling","category":"shapes","path":"examples_raylib_port/shapes_rectangle_scaling.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"shapes_circle_sector_drawing","category":"shapes","path":"examples_raylib_port/shapes_circle_sector_drawing.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"shapes_ring_drawing","category":"shapes","path":"examples_raylib_port/shapes_ring_drawing.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"shapes_triangle_strip","category":"shapes","path":"examples_raylib_port/shapes_triangle_strip.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+
+  {"name":"textures_image_loading","category":"textures","path":"examples_raylib_port/textures_image_loading.dist","requires_display":true,"requires_assets":["assets/test.png"],"requires_audio":false,"fast":false},
+  {"name":"textures_srcrec_dstrec","category":"textures","path":"examples_raylib_port/textures_srcrec_dstrec.dist","requires_display":true,"requires_assets":["assets/test.png"],"requires_audio":false,"fast":false},
+  {"name":"textures_background_scrolling","category":"textures","path":"examples_raylib_port/textures_background_scrolling.dist","requires_display":true,"requires_assets":["assets/test.png"],"requires_audio":false,"fast":false},
+  {"name":"textures_image_processing","category":"textures","path":"examples_raylib_port/textures_image_processing.dist","requires_display":true,"requires_assets":["assets/test.png"],"requires_audio":false,"fast":false},
+  {"name":"textures_logo_raylib","category":"textures","path":"examples_raylib_port/textures_logo_raylib.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+
+  {"name":"text_measure_text","category":"text","path":"examples_raylib_port/text_measure_text.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"text_input_box","category":"text","path":"examples_raylib_port/text_input_box.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"text_strings_management","category":"text","path":"examples_raylib_port/text_strings_management.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+  {"name":"text_font_loading","category":"text","path":"examples_raylib_port/text_font_loading.dist","requires_display":true,"requires_assets":["assets/font.ttf"],"requires_audio":false,"fast":false},
+  {"name":"text_codepoints_loading","category":"text","path":"examples_raylib_port/text_codepoints_loading.dist","requires_display":false,"requires_assets":[],"requires_audio":false,"fast":true},
+
+  {"name":"models_geometric_shapes","category":"models","path":"examples_raylib_port/models_geometric_shapes.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+  {"name":"models_loading","category":"models","path":"examples_raylib_port/models_loading.dist","requires_display":true,"requires_assets":["assets/model.obj"],"requires_audio":false,"fast":false},
+  {"name":"shaders_custom_uniform","category":"shaders","path":"examples_raylib_port/shaders_custom_uniform.dist","requires_display":true,"requires_assets":[],"requires_audio":false,"fast":false},
+
+  {"name":"audio_sound_loading","category":"audio","path":"examples_raylib_port/audio_sound_loading.dist","requires_display":false,"requires_assets":["assets/test.wav"],"requires_audio":true,"fast":false},
+  {"name":"audio_music_stream","category":"audio","path":"examples_raylib_port/audio_music_stream.dist","requires_display":false,"requires_assets":["assets/test.ogg"],"requires_audio":true,"fast":false}
+]

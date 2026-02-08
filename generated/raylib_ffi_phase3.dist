@@ -595,5 +595,8 @@ raylib_phase3 = ffi.load(shim_path,
   "i32 rl2_WindowShouldClose()",
   "void* rl_ptr_identity(void*)",
   "i32 rl_ptr_equal(void*, void*)",
-  "i32 rl_ptr_hash(void*)"
+  "i32 rl_ptr_hash(void*)",
+  "i32 rl_str_len(char*)",
+  "i32 rl_str_hash(char*)",
+  "i32 rl_str_check_nul(char*, i32)"
 );

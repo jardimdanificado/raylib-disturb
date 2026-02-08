@@ -601,6 +601,9 @@ int32_t rl2_WindowShouldClose(void);
 void* rl_ptr_identity(void* p);
 int32_t rl_ptr_equal(void* a, void* b);
 int32_t rl_ptr_hash(void* p);
+int32_t rl_str_len(char* s);
+int32_t rl_str_hash(char* s);
+int32_t rl_str_check_nul(char* s, int32_t max);
 
 #ifdef __cplusplus
 }

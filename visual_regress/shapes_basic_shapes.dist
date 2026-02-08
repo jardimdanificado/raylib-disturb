@@ -1,0 +1,74 @@
+// Visual regression: faithful translation of raylib/examples/shapes/shapes_basic_shapes.c
+// Window: 800x450, shapes with rotating polygon, no assets, no input.
+
+eval(read("generated/raylib_ffi_phase3.dist"));
+
+RAYWHITE = 0xF5F5F5FF;
+DARKGRAY = 0x505050FF;
+DARKBLUE = 0x0052ACFF;
+GREEN    = 14954751; // 0x00E430FF (decimal to avoid parser E-exponent bug)
+SKYBLUE  = 0x66BFFFFF;
+YELLOW   = 0xFDF900FF;
+RED      = 3861460991; // 0xE62937FF (decimal to avoid parser E-exponent bug)
+MAROON   = 3189848063; // 0xBE2137FF (decimal to avoid parser E-exponent bug)
+GOLD     = 0xFFCB00FF;
+ORANGE   = 0xFFA100FF;
+VIOLET   = 2268905215; // 0x873CBEFF (decimal to avoid parser E-exponent bug)
+BROWN    = 0x7F6A4FFF;
+BEIGE    = 0xD3B083FF;
+BLACK    = 0x000000FF;
+
+frames = 120;
+output = "out/disturb/shapes_basic_shapes.png";
+
+// screenWidth=800, screenHeight=450
+// screenWidth/5 = 160
+// screenWidth/4*2 = 400
+// screenWidth/4.0*3.0 = 600.0
+
+raylib_phase3.rl2_InitWindow(800, 450, "raylib [shapes] example - basic shapes");
+
+rotation = 0.0;
+
+raylib_phase3.rl2_SetTargetFPS(60);
+
+rf = 0;
+while (raylib_phase3.rl2_WindowShouldClose() == 0 && rf < frames) {
+  // Update
+  rotation = rotation + 0.2;
+
+  // Draw
+  raylib_phase3.rl2_BeginDrawing();
+  raylib_phase3.rl2_ClearBackground(RAYWHITE);
+
+  raylib_phase3.rl2_DrawText("some basic shapes available on raylib", 20, 20, 20, DARKGRAY);
+
+  // Circle shapes and lines
+  raylib_phase3.rl2_DrawCircle(160, 120, 35.0, DARKBLUE);
+  raylib_phase3.rl2_DrawCircleGradient(160, 220, 60.0, GREEN, SKYBLUE);
+  raylib_phase3.rl2_DrawCircleLines(160, 340, 80.0, DARKBLUE);
+  raylib_phase3.rl2_DrawEllipse(160, 120, 25.0, 20.0, YELLOW);
+  raylib_phase3.rl2_DrawEllipseLines(160, 120, 30.0, 25.0, YELLOW);
+
+  // Rectangle shapes and lines
+  raylib_phase3.rl2_DrawRectangle(340, 100, 120, 60, RED);
+  raylib_phase3.rl2_DrawRectangleGradientH(310, 170, 180, 130, MAROON, GOLD);
+  raylib_phase3.rl2_DrawRectangleLines(360, 320, 80, 60, ORANGE);
+
+  // Triangle shapes and lines
+  raylib_phase3.rl2_DrawTriangle(600.0, 80.0, 540.0, 150.0, 660.0, 150.0, VIOLET);
+  raylib_phase3.rl2_DrawTriangleLines(600.0, 160.0, 580.0, 230.0, 620.0, 230.0, DARKBLUE);
+
+  // Polygon shapes and lines
+  raylib_phase3.rl2_DrawPoly(600.0, 330.0, 6, 80.0, rotation, BROWN);
+  raylib_phase3.rl2_DrawPolyLines(600.0, 330.0, 6, 90.0, rotation, BROWN);
+  raylib_phase3.rl2_DrawPolyLinesEx(600.0, 330.0, 6, 85.0, rotation, 6.0, BEIGE);
+
+  raylib_phase3.rl2_DrawLine(18, 42, 782, 42, BLACK);
+
+  raylib_phase3.rl2_EndDrawing();
+  rf = rf + 1;
+}
+
+raylib_phase3.rl2_TakeScreenshot(output);
+raylib_phase3.rl2_CloseWindow();

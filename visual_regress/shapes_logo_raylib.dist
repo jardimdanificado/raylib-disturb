@@ -1,0 +1,34 @@
+// Visual regression: faithful translation of raylib/examples/shapes/shapes_logo_raylib.c
+// Window: 800x450, static rectangles + text, no assets, no input.
+
+eval(read("generated/raylib_ffi_phase3.dist"));
+
+RAYWHITE = 0xF5F5F5FF;
+BLACK    = 0x000000FF;
+GRAY     = 0x828282FF;
+
+frames = 120;
+output = "out/disturb/shapes_logo_raylib.png";
+
+// screenWidth=800, screenHeight=450
+// screenWidth/2 - 128 = 272, screenHeight/2 - 128 = 97
+// screenWidth/2 - 112 = 288, screenHeight/2 - 112 = 113
+// screenWidth/2 - 44  = 356, screenHeight/2 + 48  = 273
+
+raylib_phase3.rl2_InitWindow(800, 450, "raylib [shapes] example - logo raylib");
+raylib_phase3.rl2_SetTargetFPS(60);
+
+rf = 0;
+while (raylib_phase3.rl2_WindowShouldClose() == 0 && rf < frames) {
+  raylib_phase3.rl2_BeginDrawing();
+  raylib_phase3.rl2_ClearBackground(RAYWHITE);
+  raylib_phase3.rl2_DrawRectangle(272, 97, 256, 256, BLACK);
+  raylib_phase3.rl2_DrawRectangle(288, 113, 224, 224, RAYWHITE);
+  raylib_phase3.rl2_DrawText("raylib", 356, 273, 50, BLACK);
+  raylib_phase3.rl2_DrawText("this is NOT a texture!", 350, 370, 10, GRAY);
+  raylib_phase3.rl2_EndDrawing();
+  rf = rf + 1;
+}
+
+raylib_phase3.rl2_TakeScreenshot(output);
+raylib_phase3.rl2_CloseWindow();
