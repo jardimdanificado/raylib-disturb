@@ -1,0 +1,78 @@
+// procedural_texture.disturb -- create/update texture from packed RGBA8 int[] pixels.
+
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0 || system("test -n \"$DISPLAY\"") != 0) {
+  println("procedural_texture skipped (headless environment)");
+}
+else {
+  eval(read("disturb_bindings/raylib.disturb"));
+
+  w = 96;
+  h = 96;
+
+  pixel_at = (x, y, frame){
+    checker = 0;
+    tile = x + y;
+    while (tile >= 16) { tile = tile - 16; }
+    if (tile < 8) { checker = 40; }
+
+    stripe = 0;
+    sx = x + frame;
+    while (sx >= w) { sx = sx - w; }
+    if (sx < 10) { stripe = 80; }
+
+    r = x * 3 + checker + stripe;
+    g = y * 3 + stripe;
+    b = x + y + 64;
+    while (r >= 256) { r = r - 256; }
+    while (g >= 256) { g = g - 256; }
+    while (b >= 256) { b = b - 256; }
+    return rgba(r, g, b, 255);
+  };
+
+  pixels = [0];
+  pixels.size = w * h;
+  idx = 0;
+  for (y = 0; y < h; y = y + 1) {
+    for (x = 0; x < w; x = x + 1) {
+      pixels[idx] = pixel_at(x, y, 0);
+      idx = idx + 1;
+    }
+  }
+
+  initWindow(800, 450, "Disturb + raylib: Procedural Texture");
+  setTargetFPS(60);
+
+  tex = makeTexture(w, h, pixels);
+  if (tex.ptr == 0) {
+    println("Failed to create procedural texture");
+    closeWindow();
+  }
+  else {
+    frame = 0;
+    max_frames = 180;
+
+    while (shouldClose() == 0 && isKeyPressed(KEY_ESCAPE) == 0 && frame < max_frames) {
+      frame = frame + 1;
+
+      idx = 0;
+      for (y = 0; y < h; y = y + 1) {
+        for (x = 0; x < w; x = x + 1) {
+          pixels[idx] = pixel_at(x, y, frame);
+          idx = idx + 1;
+        }
+      }
+      tex.updatePixels(pixels);
+
+      begin();
+      clear(COLOR_RAYWHITE);
+      tex.drawPro(0.0, 0.0, w + 0.0, h + 0.0, 400.0, 225.0, 320.0, 320.0, 160.0, 160.0, frame * 0.6, COLOR_WHITE);
+      drawText("Procedural texture from int[] RGBA8", 10, 10, 20, COLOR_DARKGRAY);
+      drawText("Auto-exit ~3s", 10, 36, 18, COLOR_DARKGRAY);
+      end();
+    }
+
+    tex.free();
+    closeWindow();
+    println("procedural_texture finished");
+  }
+}

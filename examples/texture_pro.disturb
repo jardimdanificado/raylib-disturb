@@ -1,0 +1,45 @@
+// texture_pro.disturb -- DrawTexturePro-style transform demo.
+
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0 || system("test -n \"$DISPLAY\"") != 0) {
+  println("texture_pro skipped (headless environment)");
+}
+else if (system("test -f assets/test.png") != 0) {
+  println("Missing texture asset: assets/test.png");
+  println("Add any PNG at assets/test.png, then rerun: make run_texture_pro");
+}
+else {
+  eval(read("disturb_bindings/raylib.disturb"));
+
+  initWindow(800, 450, "Disturb + raylib: Texture Pro");
+  setTargetFPS(60);
+
+  tex = loadTexture("assets/test.png");
+  if (tex.ptr == 0) {
+    println("Failed to load texture: assets/test.png");
+    closeWindow();
+  }
+  else {
+    frame = 0;
+    max_frames = 180;
+
+    while (shouldClose() == 0 && isKeyPressed(KEY_ESCAPE) == 0 && frame < max_frames) {
+      frame = frame + 1;
+      rot = frame * 2.0;
+      tw = tex.w() + 0.0;
+      th = tex.h() + 0.0;
+      dw = tw * 1.5;
+      dh = th * 1.5;
+
+      begin();
+      clear(COLOR_RAYWHITE);
+      tex.drawPro(0.0, 0.0, tw, th, 400.0, 225.0, dw, dh, dw/2.0, dh/2.0, rot, COLOR_WHITE);
+      drawText("DrawTexturePro demo (auto-exit ~3s)", 10, 10, 20, COLOR_DARKGRAY);
+      drawText("Press ESC to close", 10, 36, 18, COLOR_DARKGRAY);
+      end();
+    }
+
+    tex.free();
+    closeWindow();
+    println("texture_pro finished");
+  }
+}

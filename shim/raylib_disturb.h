@@ -47,6 +47,40 @@ void     rl_draw_texture_region(intptr_t tex,
                                 float sx, float sy, float sw, float sh,
                                 float dx, float dy, int rgba_tint);
 
+/* A) 2D sprite transforms (DrawTexturePro) */
+void     rl_draw_texture_pro(intptr_t tex,
+                             float sx, float sy, float sw, float sh,
+                             float dx, float dy, float dw, float dh,
+                             float ox, float oy,
+                             float rot_deg, int rgba_tint);
+
+/* B) Procedural textures: create from pixels, update pixels */
+intptr_t rl_make_texture_rgba8(int w, int h, intptr_t pixels, int pixel_count);
+void     rl_update_texture_rgba8(intptr_t tex, intptr_t pixels, int pixel_count);
+
+/* C) Text measurement + custom fonts */
+int      rl_measure_text(const char *text, int font_size);
+intptr_t rl_load_font(const char *path);
+intptr_t rl_load_font_n(const char *path, int path_len);
+void     rl_unload_font(intptr_t font);
+int      rl_measure_text_ex(intptr_t font, const char *text,
+                            float font_size, float spacing);
+void     rl_draw_text_ex(intptr_t font, const char *text,
+                         float x, float y, float font_size,
+                         float spacing, int rgba);
+
+/* D) 2D camera */
+intptr_t rl_camera2d_create(float offset_x, float offset_y,
+                            float target_x, float target_y,
+                            float rotation, float zoom);
+void     rl_camera2d_set(intptr_t cam,
+                         float offset_x, float offset_y,
+                         float target_x, float target_y,
+                         float rotation, float zoom);
+void     rl_camera2d_begin(intptr_t cam);
+void     rl_camera2d_end(void);
+void     rl_camera2d_destroy(intptr_t cam);
+
 #ifdef __cplusplus
 }
 #endif

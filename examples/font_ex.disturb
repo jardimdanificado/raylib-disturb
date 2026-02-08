@@ -1,0 +1,44 @@
+// font_ex.disturb -- optional custom font demo.
+
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0 || system("test -n \"$DISPLAY\"") != 0) {
+  println("font_ex skipped (headless environment)");
+}
+else if (system("test -f assets/font.ttf") != 0) {
+  println("Missing font asset: assets/font.ttf");
+  println("Add a TTF file at assets/font.ttf, then rerun: ./disturb/disturb examples/font_ex.disturb");
+}
+else {
+  eval(read("disturb_bindings/raylib.disturb"));
+
+  font = loadFont("assets/font.ttf");
+  if (font.ptr == 0) {
+    println("Failed to load font: assets/font.ttf");
+  }
+  else {
+    text = "Font + drawTextEx";
+    size = 40.0;
+    spacing = 2.0;
+    measured = font.measure(text, size, spacing);
+    println("Font measured width: " + measured);
+
+    initWindow(800, 450, "Disturb + raylib: Font Ex");
+    setTargetFPS(60);
+
+    frame = 0;
+    max_frames = 120;
+
+    while (shouldClose() == 0 && isKeyPressed(KEY_ESCAPE) == 0 && frame < max_frames) {
+      frame = frame + 1;
+      begin();
+      clear(COLOR_RAYWHITE);
+      drawRect(90, 190, measured + 20, 64, COLOR_LIGHTGRAY);
+      font.draw(text, 100.0, 200.0, size, spacing, COLOR_DARKGRAY);
+      drawText("Font demo (auto-exit ~2s)", 10, 10, 20, COLOR_BLUE);
+      end();
+    }
+
+    closeWindow();
+    font.free();
+    println("font_ex finished");
+  }
+}

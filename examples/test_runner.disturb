@@ -1,0 +1,58 @@
+// test_runner.disturb -- quick headless checks for packing/pixel math.
+
+eval(read("disturb_bindings/raylib.disturb"));
+
+failed = 0;
+check = (name, cond){
+  if (cond) {
+    println("PASS " + name);
+    return 0;
+  }
+  else {
+    println("FAIL " + name);
+    return 1;
+  }
+};
+
+// 0x01020304 == 16909060
+failed = failed + check("rgba packing", rgba(1, 2, 3, 4) == 16909060);
+
+w = 8;
+h = 8;
+px = [0];
+px.size = w * h;
+idx = 0;
+for (y = 0; y < h; y = y + 1) {
+  for (x = 0; x < w; x = x + 1) {
+    px[idx] = rgba(x * 10, y * 10, (x + y) * 8, 255);
+    idx = idx + 1;
+  }
+}
+
+failed = failed + check("pixel len", px.size == w * h);
+failed = failed + check("pixel[0]", px[0] == rgba(0, 0, 0, 255));
+failed = failed + check("pixel[last]", px[w * h - 1] == rgba(70, 70, 112, 255));
+
+sample = (x, y, frame){
+  checker = 0;
+  tile = x + y;
+  while (tile >= 4) { tile = tile - 4; }
+  if (tile < 2) { checker = 32; }
+
+  r = x + frame + checker;
+  while (r >= 256) { r = r - 256; }
+
+  g = y * 3;
+  while (g >= 256) { g = g - 256; }
+
+  return rgba(r, g, 128, 255);
+};
+
+failed = failed + check("sample fixed", sample(5, 7, 11) == rgba(48, 21, 128, 255));
+
+if (failed == 0) {
+  println("PASS quick tests");
+}
+else {
+  println("FAIL quick tests: " + failed + " failure(s)");
+}
