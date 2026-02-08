@@ -1,0 +1,38 @@
+// User-facing texture draw example using disturb_bindings/raylib.dist
+
+eval(read("disturb_bindings/raylib.dist"));
+
+if (hasDisplay() == 0) {
+  println("SKIP texture_draw: headless environment");
+}
+else if (hasAsset("assets/test.png") == 0) {
+  println("SKIP texture_draw: missing assets/test.png");
+}
+else {
+  tex = loadTexture("assets/test.png");
+  if (tex.ptr == null || tex.ptr == 0) {
+    println("FAIL texture_draw: LoadTexture returned null");
+    system("kill -TERM $PPID");
+  }
+  else {
+    initWindow(800, 450, "raylib.dist texture draw");
+    setTargetFPS(60);
+
+    frame = 0;
+    rot = 0.0;
+    while (windowShouldClose() == 0 && frame < 120) {
+      frame = frame + 1;
+      rot = rot + 0.8;
+      beginDrawing();
+      clearBackground(COLOR_RAYWHITE);
+      tex.draw(130, 90, COLOR_WHITE);
+      tex.drawEx(420.0, 140.0, rot, 0.6, COLOR_WHITE);
+      drawText("texture draw", 20, 20, 24, COLOR_DARKGRAY);
+      endDrawing();
+    }
+
+    tex.unload();
+    closeWindow();
+    println("PASS texture_draw");
+  }
+}

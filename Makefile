@@ -25,7 +25,7 @@ DISTURB_BIN    := $(DISTURB_DIR)/disturb
 # System libs needed by raylib on Linux (X11 desktop)
 RAYLIB_SYSLIBS := -lm -lpthread -ldl -lrt -lX11
 
-.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean deep_clean assets_note run_smoke run_hello run_texture run_texture_stress run_texture_pro run_procedural run_measure_text run_camera2d run_quick_tests run_new_examples run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera run_original_examples raylib_inventory raylib_phase2 raylib_phase3 shim_phase3 run_phase3_smoke run_phase6_conformance verify_phase3_symbols run_ported_examples clean_phase3
+.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean deep_clean assets_note run_smoke run_hello run_texture run_texture_stress run_texture_pro run_procedural run_measure_text run_camera2d run_quick_tests run_new_examples run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera run_original_examples raylib_inventory raylib_phase2 raylib_phase3 shim_phase3 run_phase3_smoke run_phase6_conformance verify_phase3_symbols run_ported_examples run_examples_user clean_phase3
 
 all: deps raylib shim disturb $(SHIM_PATH_BIN)
 
@@ -190,6 +190,14 @@ verify_phase3_symbols: shim_phase3
 
 run_ported_examples: shim_phase3 disturb
 	./$(DISTURB_BIN) examples_raylib_port/run_all.dist
+
+run_examples_user: shim_phase3 disturb
+	./$(DISTURB_BIN) examples_user/headless_offscreen.dist
+	./$(DISTURB_BIN) examples_user/hello_window.dist
+	./$(DISTURB_BIN) examples_user/basic_shapes.dist
+	./$(DISTURB_BIN) examples_user/texture_draw.dist
+	./$(DISTURB_BIN) examples_user/text_render.dist
+	./$(DISTURB_BIN) examples_user/camera2d.dist
 
 assets_note:
 	@echo "Required: assets/test.png (for texture_pro/texture demos)"

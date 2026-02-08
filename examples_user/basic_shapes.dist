@@ -1,0 +1,27 @@
+// User-facing basic shapes example using disturb_bindings/raylib.dist
+
+eval(read("disturb_bindings/raylib.dist"));
+
+if (hasDisplay() == 0) {
+  println("SKIP basic_shapes: headless environment");
+}
+else {
+  initWindow(800, 450, "raylib.dist basic shapes");
+  setTargetFPS(60);
+
+  frame = 0;
+  while (windowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    beginDrawing();
+    clearBackground(COLOR_RAYWHITE);
+    drawCircle(180, 140, 40, COLOR_DARKBLUE);
+    drawRectangle(120, 230, 180, 90, COLOR_RED);
+    drawRectangleLines(120, 230, 180, 90, COLOR_MAROON);
+    drawLine(380, 100, 560, 260, COLOR_DARKGRAY);
+    drawText("basic shapes", 30, 20, 24, COLOR_DARKGRAY);
+    endDrawing();
+  }
+
+  closeWindow();
+  println("PASS basic_shapes");
+}

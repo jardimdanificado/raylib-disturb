@@ -1,179 +1,191 @@
 # raylib-disturb
 
-Raylib bindings for the [Disturb](https://github.com/jardimdanificado/disturb) language via FFI.
+Disturb bindings for raylib with a generated C shim + FFI layer and a user-facing Disturb API module.
+
+## Overview
+- Public module: `disturb_bindings/raylib.dist`
+- Generated low-level FFI: `generated/raylib_ffi_phase3.dist`
+- Generated C shim: `generated/raylib_shim_phase3.{h,c}` -> `libraylib_disturb_phase3.so`
+- Portability ceiling: `SUPPORTED=587`, `NEEDS_MANUAL=0`, `OMITTED=12`
+- Design constraints: no callbacks, no varargs, only `i32/f32/char*/void*` across FFI
+
+## Compatibility
+- raylib tested: `5.6-dev` (`raylib` commit `a6fa8b9`)
+- Disturb tested: `0.18.0` (`disturb` commit `98c6960`)
 
 ## Prerequisites
-
 - GCC or Clang
 - GNU Make
-- CMake (recommended; Makefile fallback is used if unavailable)
+- CMake (recommended)
 - libffi development headers (`libffi-dev` / `libffi-devel`)
 - X11 development headers (`libx11-dev` / `libX11-devel`)
 
-On Debian/Ubuntu:
-
-```
-sudo apt install build-essential cmake libffi-dev libx11-dev
-```
-
-On Arch:
-
-```
-sudo pacman -S base-devel cmake libffi libx11
-```
-
-## Build
-
-```
-make
-```
-
-This builds:
-
-1. **raylib** as a static library (`raylib/build/raylib/libraylib.a`)
-2. **libraylib_disturb.so** - the C shim shared library in the project root
-3. **disturb** interpreter with FFI enabled (`disturb/disturb`)
-4. **disturb_bindings/shim_path.bin** generated helper file (null-terminated `./libraylib_disturb.so` path for `ffi.load`)
-
-## Run examples
-
-```
-make run_smoke          # No-window FFI load smoke test
-make run_hello          # Minimal hello window run
-make run_texture        # Loads and draws assets/test.png
-make run_texture_stress # Repeated load/draw/unload texture test
-make run_texture_pro    # DrawTexturePro-style rotate/scale/pivot demo
-make run_procedural     # Create/update texture from int[] RGBA8 pixels
-make run_measure_text   # measureText visual check
-make run_camera2d       # Camera2D pan/zoom demo
-make run_quick_tests    # Headless quick checks (packing/pixels)
-make run_new_examples   # Quick test + procedural + measureText
-make run_core_basic_window     # raylib core_basic_window port
-make run_core_input_keys       # raylib core_input_keys port
-make run_textures_image_loading # raylib textures_image_loading port
-make run_core_2d_camera        # raylib core_2d_camera port
-make run_original_examples     # Run all official example ports
-```
-
-`make run_hello` sets `DISTURB_HEADLESS=1` to keep CI/headless environments deterministic.
-Run `./disturb/disturb examples/hello_window.disturb` directly for the interactive window loop.
-
-Texture-based examples require `assets/test.png`.
-Place any small PNG at that path:
-
+## Build and Generate
 ```bash
-cp /path/to/your/image.png assets/test.png
+make raylib_phase2
+make raylib_phase3
+make shim_phase3
 ```
 
-`make run_texture_stress` exits gracefully with instructions if `assets/test.png` is missing.
-`make run_textures_image_loading` also requires `assets/test.png`.
+This produces:
+- `generated/plan.json`
+- `generated/raylib_shim_phase3.h`
+- `generated/raylib_shim_phase3.c`
+- `generated/raylib_ffi_phase3.dist`
+- `libraylib_disturb_phase3.so`
+- `disturb_bindings/shim_path_phase3.bin`
 
-Optional font demo asset:
+Disturb loads the shared object via `generated/raylib_ffi_phase3.dist`.
 
-```bash
-cp /path/to/your/font.ttf assets/font.ttf
+## Public API Module
+Use only:
+```disturb
+eval(read("disturb_bindings/raylib.dist"));
 ```
 
-Then run:
+The module wraps low-level FFI and exposes ergonomic functions and handle objects.
 
-```bash
-./disturb/disturb examples/font_ex.disturb
+## Quick Start
+### Minimal window
+```disturb
+eval(read("disturb_bindings/raylib.dist"));
+
+if (hasDisplay() == 0) {
+  println("headless: skipping window");
+}
+else {
+  initWindow(640, 360, "hello");
+  setTargetFPS(60);
+
+  frame = 0;
+  while (windowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    beginDrawing();
+    clearBackground(COLOR_RAYWHITE);
+    drawText("Hello raylib.dist", 180, 160, 24, COLOR_DARKGRAY);
+    endDrawing();
+  }
+
+  closeWindow();
+}
 ```
 
-## Helper tooling
+### Minimal headless/offscreen
+```disturb
+eval(read("disturb_bindings/raylib.dist"));
 
-```bash
-tools/check_symbols.sh
-```
+img = beginOffscreen(32, 24, COLOR_BLACK);
+img.drawRectangle(4, 4, 10, 8, COLOR_GREEN);
 
-Prints exported `rl_*` symbols from `./libraylib_disturb.so` using `nm -D` (or `objdump -T` fallback).
-
-### Raylib header inventory + skeleton generation
-
-```bash
-make raylib_inventory
-```
-
-This runs `python tools/raylib_gen.py` and regenerates:
-
-- `tools/raylib_inventory.json`
-- `generated/raylib_shim.h`
-- `generated/raylib_shim.c`
-- `generated/raylib_ffi.dist`
-- `generated/report.md`
-
-## Project layout
-
-```
-shim/                     C shim source (flat C ABI over raylib)
-disturb_bindings/         Disturb wrapper module
-examples/                 Disturb example programs
-assets/                   Texture/image assets
-raylib/                   Vendored raylib source
-disturb/                  Vendored Disturb source
-tools/                    Small project helper scripts
-libraylib_disturb.so      Built shim library (after make)
-```
-
-## Usage in your own scripts
-
-```
-eval(read("disturb_bindings/raylib.disturb"));
-
-initWindow(800, 450, "My App");
-setTargetFPS(60);
-
-while (shouldClose() == 0) {
-  begin();
-  clear(COLOR_RAYWHITE);
-  drawText("Hello!", 100, 100, 30, COLOR_DARKGRAY);
-  end();
+if (assertPixelEquals(img, 6, 6, COLOR_GREEN) == 1) {
+  println("PASS offscreen");
+}
+else {
+  println("FAIL offscreen");
 }
 
-closeWindow();
+img.unload();
 ```
 
-The bindings load `./libraylib_disturb.so` from the current directory. Run scripts from the project root so the path resolves correctly.
+## API Overview
+### Core
+- `initWindow(w, h, title)`
+- `closeWindow()`
+- `windowShouldClose()`
+- `setTargetFPS(fps)`
+- `getFPS()`, `getFrameTime()`, `getTime()`, `waitTime(sec)`
 
-## Extended API
+### Drawing
+- `beginDrawing()`, `endDrawing()`
+- `clearBackground(color)`
+- `drawText(text, x, y, size, color)`
+- `drawRectangle(x, y, w, h, color)`
+- `drawRectangleLines(x, y, w, h, color)`
+- `drawCircle(x, y, radius, color)`
+- `drawLine(x1, y1, x2, y2, color)`
+- `drawFPS(x, y)`
 
-### Sprite transforms (DrawTexturePro)
+### Input
+- `isKeyDown(key)`, `isKeyPressed(key)`, `getKeyPressed()`
+- `getMousePosition()` -> `{x, y, ok}`
+- `getMouseWheelMove()`
 
+### Text
+- `measureText(text, size)`
+
+### Texture handles
+- `tex = loadTexture(path)`
+- `tex.draw(x, y, tint)`
+- `tex.drawEx(x, y, rotation, scale, tint)`
+- `tex.drawRec(sx, sy, sw, sh, dx, dy, tint)`
+- `tex.unload()`
+
+### Camera2D
+- `beginMode2D(camera)`
+- `endMode2D()`
+- `getCameraMatrix2D(camera)` -> `{ok, m0..m15}`
+- Note: current ergonomic layer uses null/opaque camera handles; full constructor wrappers are future work.
+
+### Audio
+- low-level APIs are available through generated FFI
+- on headless/CI systems audio device initialization may fail and should be treated as skip
+
+## Pointer and Memory Model
+- `void*` handles are 64-bit safe.
+- Disturb FFI now roundtrips pointer values through integer storage without truncation.
+- Validation test: `examples_phase3/test_ptr_roundtrip.dist`.
+- Ownership rules:
+  - textures: call `tex.unload()`
+  - images/offscreen: call `img.unload()`
+  - other native handles should be explicitly unloaded/freed by the matching API
+- Do not rely on GC for native resource release.
+
+## Known Limitations
+These 12 APIs are intentionally omitted (callbacks/varargs):
+- `AttachAudioMixedProcessor` (callback)
+- `AttachAudioStreamProcessor` (callback)
+- `DetachAudioMixedProcessor` (callback)
+- `DetachAudioStreamProcessor` (callback)
+- `SetAudioStreamCallback` (callback)
+- `SetLoadFileDataCallback` (callback)
+- `SetLoadFileTextCallback` (callback)
+- `SetSaveFileDataCallback` (callback)
+- `SetSaveFileTextCallback` (callback)
+- `SetTraceLogCallback` (callback)
+- `TextFormat` (varargs)
+- `TraceLog` (varargs)
+
+Suggested alternatives:
+- implement logging/formatting on Disturb side
+- use polling/state APIs instead of callback registration
+
+## Examples
+### Regression suites
+- `examples_phase3/` for smoke + conformance
+- `examples_raylib_port/` for official example ports
+
+### User-facing examples
+- `examples_user/hello_window.dist`
+- `examples_user/basic_shapes.dist`
+- `examples_user/texture_draw.dist`
+- `examples_user/text_render.dist`
+- `examples_user/camera2d.dist`
+- `examples_user/headless_offscreen.dist`
+
+Run them with:
+```bash
+make run_examples_user
 ```
-tex = loadTexture("sprite.png");
-// drawPro(srcX,srcY,srcW,srcH, dstX,dstY,dstW,dstH, originX,originY, rotation, tint)
-tex.drawPro(0,0,32,32, 100,100,64,64, 32,32, 45.0, COLOR_WHITE);
-```
 
-### Procedural textures
-
-```
-pixels = [];  // int[] of packed 0xRRGGBBAA
-for (i = 0; i < 64*64; i = i + 1) { pixels.push(rgba(i % 256, 0, 128, 255)); }
-tex = makeTexture(64, 64, pixels);
-// Update later:
-tex.updatePixels(new_pixels);
-tex.free();
-```
-
-### Text measurement and custom fonts
-
-```
-w = measureText("Hello", 20);               // default font
-font = loadFont("assets/myfont.ttf");
-font.draw("Custom text", 10, 10, 24, 1.0, COLOR_WHITE);
-w2 = font.measure("Custom text", 24, 1.0);
-font.free();
-```
-
-### 2D camera
-
-```
-cam = createCamera2D(400, 300, 0, 0, 0.0, 1.0);
-// In draw loop:
-cam.begin();
-  drawRect(-50, -50, 100, 100, COLOR_RED);   // world-space drawing
-cam.end();
-cam.set(400, 300, player_x, player_y, 0.0, 2.0);  // update each frame
-cam.free();
+## Validation Commands
+All should pass before release:
+```bash
+make raylib_phase2
+make raylib_phase3
+make shim_phase3
+make verify_phase3_symbols
+make run_phase3_smoke
+make run_phase6_conformance
+make run_ported_examples
+make run_examples_user
 ```

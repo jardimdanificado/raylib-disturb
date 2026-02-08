@@ -1,0 +1,27 @@
+// User-facing deterministic offscreen/headless example using disturb_bindings/raylib.dist
+
+eval(read("disturb_bindings/raylib.dist"));
+
+fail = (msg){ println("FAIL headless_offscreen: " + msg); system("kill -TERM $PPID"); };
+
+w = 32;
+h = 24;
+img = beginOffscreen(w, h, COLOR_BLACK);
+
+if (img.ptr == null || img.ptr == 0) { fail("beginOffscreen returned null image"); }
+if (img.isValid() != 1) { fail("image handle is invalid"); }
+
+img.drawRectangle(4, 4, 10, 8, COLOR_GREEN);
+img.drawCircle(22, 12, 4, COLOR_RED);
+img.drawLine(0, 0, 31, 23, COLOR_BLUE);
+img.drawText("A", 2, 16, 6, COLOR_WHITE);
+
+if (assertPixelEquals(img, 6, 6, COLOR_GREEN) != 1) { fail("rectangle pixel mismatch"); }
+if (assertPixelNotEquals(img, 22, 12, COLOR_BLACK) != 1) { fail("circle pixel remained background"); }
+if (assertPixelEquals(img, 0, 0, COLOR_BLUE) != 1) { fail("line pixel mismatch"); }
+
+non_bg = countNonBackground(img, w, h, COLOR_BLACK);
+if (non_bg < 20) { fail("unexpectedly low non-background pixel count: " + non_bg); }
+
+img.unload();
+println("PASS headless_offscreen");
