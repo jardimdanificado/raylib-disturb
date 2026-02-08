@@ -604,6 +604,12 @@ int32_t rl_ptr_hash(void* p);
 int32_t rl_str_len(char* s);
 int32_t rl_str_hash(char* s);
 int32_t rl_str_check_nul(char* s, int32_t max);
+void* rl_create_camera3d(float pos_x, float pos_y, float pos_z, float tgt_x, float tgt_y, float tgt_z, float up_x, float up_y, float up_z, float fovy, int32_t projection);
+void* rl_set_camera3d(void* cam, float pos_x, float pos_y, float pos_z, float tgt_x, float tgt_y, float tgt_z, float up_x, float up_y, float up_z, float fovy, int32_t projection);
+void* rl_destroy_camera3d(void* cam);
+void* rl_create_camera2d(float off_x, float off_y, float tgt_x, float tgt_y, float rotation, float zoom);
+void* rl_set_camera2d(void* cam, float off_x, float off_y, float tgt_x, float tgt_y, float rotation, float zoom);
+void* rl_destroy_camera2d(void* cam);
 
 #ifdef __cplusplus
 }

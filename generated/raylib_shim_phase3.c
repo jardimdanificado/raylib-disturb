@@ -4684,3 +4684,55 @@ int32_t rl_str_check_nul(char* s, int32_t max) {
     }
     return 0;
 }
+
+void* rl_create_camera3d(float pos_x, float pos_y, float pos_z, float tgt_x, float tgt_y, float tgt_z, float up_x, float up_y, float up_z, float fovy, int32_t projection) {
+    Camera3D* cam = (Camera3D*)malloc(sizeof(Camera3D));
+    if (!cam) return NULL;
+    cam->position = (Vector3){ pos_x, pos_y, pos_z };
+    cam->target = (Vector3){ tgt_x, tgt_y, tgt_z };
+    cam->up = (Vector3){ up_x, up_y, up_z };
+    cam->fovy = fovy;
+    cam->projection = projection;
+    return (void*)cam;
+}
+
+void* rl_set_camera3d(void* cam, float pos_x, float pos_y, float pos_z, float tgt_x, float tgt_y, float tgt_z, float up_x, float up_y, float up_z, float fovy, int32_t projection) {
+    if (!cam) return NULL;
+    Camera3D* c = (Camera3D*)cam;
+    c->position = (Vector3){ pos_x, pos_y, pos_z };
+    c->target = (Vector3){ tgt_x, tgt_y, tgt_z };
+    c->up = (Vector3){ up_x, up_y, up_z };
+    c->fovy = fovy;
+    c->projection = projection;
+    return cam;
+}
+
+void* rl_destroy_camera3d(void* cam) {
+    if (cam) free(cam);
+    return NULL;
+}
+
+void* rl_create_camera2d(float off_x, float off_y, float tgt_x, float tgt_y, float rotation, float zoom) {
+    Camera2D* cam = (Camera2D*)malloc(sizeof(Camera2D));
+    if (!cam) return NULL;
+    cam->offset = (Vector2){ off_x, off_y };
+    cam->target = (Vector2){ tgt_x, tgt_y };
+    cam->rotation = rotation;
+    cam->zoom = zoom;
+    return (void*)cam;
+}
+
+void* rl_set_camera2d(void* cam, float off_x, float off_y, float tgt_x, float tgt_y, float rotation, float zoom) {
+    if (!cam) return NULL;
+    Camera2D* c = (Camera2D*)cam;
+    c->offset = (Vector2){ off_x, off_y };
+    c->target = (Vector2){ tgt_x, tgt_y };
+    c->rotation = rotation;
+    c->zoom = zoom;
+    return cam;
+}
+
+void* rl_destroy_camera2d(void* cam) {
+    if (cam) free(cam);
+    return NULL;
+}

@@ -598,5 +598,11 @@ raylib_phase3 = ffi.load(shim_path,
   "i32 rl_ptr_hash(void*)",
   "i32 rl_str_len(char*)",
   "i32 rl_str_hash(char*)",
-  "i32 rl_str_check_nul(char*, i32)"
+  "i32 rl_str_check_nul(char*, i32)",
+  "void* rl_create_camera3d(f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, i32)",
+  "void* rl_set_camera3d(void*, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, i32)",
+  "void* rl_destroy_camera3d(void*)",
+  "void* rl_create_camera2d(f32, f32, f32, f32, f32, f32)",
+  "void* rl_set_camera2d(void*, f32, f32, f32, f32, f32, f32)",
+  "void* rl_destroy_camera2d(void*)"
 );
