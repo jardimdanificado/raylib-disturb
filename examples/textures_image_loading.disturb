@@ -1,0 +1,40 @@
+// raylib [textures] example - image loading (Disturb port)
+// Uses assets/test.png as replacement for raylib examples resources.
+
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0 || system("test -n \"$DISPLAY\"") != 0) {
+  println("textures_image_loading skipped (headless environment)");
+}
+else if (system("test -f assets/test.png") != 0) {
+  println("Missing texture asset: assets/test.png");
+  println("Add any PNG at assets/test.png, then rerun: make run_textures_image_loading");
+}
+else {
+  eval(read("disturb_bindings/raylib.disturb"));
+
+  screenWidth = 800;
+  screenHeight = 450;
+
+  initWindow(screenWidth, screenHeight, "raylib [textures] example - image loading");
+  tex = loadTexture("assets/test.png");
+
+  if (tex.ptr == 0) {
+    println("Failed to load texture: assets/test.png");
+    closeWindow();
+  }
+  else {
+    setTargetFPS(60);
+
+    while (shouldClose() == 0) {
+      begin();
+      clear(COLOR_RAYWHITE);
+      drawX = screenWidth / 2 - tex.w() / 2;
+      drawY = screenHeight / 2 - tex.h() / 2;
+      tex.draw(drawX, drawY, COLOR_WHITE);
+      drawText("this IS a texture loaded from an image!", 300, 370, 10, COLOR_DARKGRAY);
+      end();
+    }
+
+    tex.free();
+    closeWindow();
+  }
+}

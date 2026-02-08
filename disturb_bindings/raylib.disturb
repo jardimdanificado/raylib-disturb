@@ -9,6 +9,7 @@ if (shim_path == null) {
 
 rl = ffi.load(shim_path,
   "i32   rl_init_window(i32, i32, char*)",
+  "i32   rl_init_window_n(i32, i32, char*, i32)",
   "i32   rl_window_should_close()",
   "void  rl_begin_drawing()",
   "void  rl_end_drawing()",
@@ -22,6 +23,7 @@ rl = ffi.load(shim_path,
   "void  rl_draw_circle(i32, i32, f32, i32)",
   "void  rl_draw_rectangle(i32, i32, i32, i32, i32)",
   "void  rl_draw_text(char*, i32, i32, i32, i32)",
+  "void  rl_draw_text_n(char*, i32, i32, i32, i32, i32)",
 
   "i32   rl_is_key_down(i32)",
   "i32   rl_is_key_pressed(i32)",
@@ -50,7 +52,10 @@ rl = ffi.load(shim_path,
   "intptr_t rl_load_font_n(char*, i32)",
   "void     rl_unload_font(intptr_t)",
   "i32      rl_measure_text_ex(intptr_t, char*, f32, f32)",
+  "i32      rl_measure_text_n(char*, i32, i32)",
+  "i32      rl_measure_text_ex_n(intptr_t, char*, i32, f32, f32)",
   "void     rl_draw_text_ex(intptr_t, char*, f32, f32, f32, f32, i32)",
+  "void     rl_draw_text_ex_n(intptr_t, char*, i32, f32, f32, f32, f32, i32)",
 
   "intptr_t rl_camera2d_create(f32, f32, f32, f32, f32, f32)",
   "void     rl_camera2d_set(intptr_t, f32, f32, f32, f32, f32, f32)",
@@ -89,7 +94,9 @@ KEY_S      = 83;
 KEY_D      = 68;
 
 // --- Friendly wrapper functions ---
-initWindow = (w, h, title){ return rl.rl_init_window(w, h, title); };
+initWindow = (w, h, title){
+  return rl.rl_init_window_n(w, h, title, title.size);
+};
 shouldClose = (){ return rl.rl_window_should_close(); };
 begin = (){ rl.rl_begin_drawing(); };
 end = (){ rl.rl_end_drawing(); };
@@ -102,7 +109,9 @@ drawPixel = (x, y, color){ rl.rl_draw_pixel(x, y, color); };
 drawLine = (x1, y1, x2, y2, color){ rl.rl_draw_line(x1, y1, x2, y2, color); };
 drawCircle = (cx, cy, r, color){ rl.rl_draw_circle(cx, cy, r, color); };
 drawRect = (x, y, w, h, color){ rl.rl_draw_rectangle(x, y, w, h, color); };
-drawText = (text, x, y, size, color){ rl.rl_draw_text(text, x, y, size, color); };
+drawText = (text, x, y, size, color){
+  rl.rl_draw_text_n(text, text.size, x, y, size, color);
+};
 
 isKeyDown = (key){ return rl.rl_is_key_down(key); };
 isKeyPressed = (key){ return rl.rl_is_key_pressed(key); };
@@ -114,7 +123,7 @@ mouseY = (){ return rl.rl_get_mouse_y(); };
 mouseWheel = (){ return rl.rl_get_mouse_wheel_move(); };
 
 // --- Text measurement (default font) ---
-measureText = (text, size){ return rl.rl_measure_text(text, size); };
+measureText = (text, size){ return rl.rl_measure_text_n(text, text.size, size); };
 
 // --- Texture object factory ---
 // Returns a table with methods for drawing and cleanup.
@@ -156,10 +165,10 @@ loadFont = (path){
   return {
     ptr = local.handle,
     draw = (text, x, y, size, spacing, color){
-      rl.rl_draw_text_ex(this.ptr, text, x, y, size, spacing, color);
+      rl.rl_draw_text_ex_n(this.ptr, text, text.size, x, y, size, spacing, color);
     },
     measure = (text, size, spacing){
-      return rl.rl_measure_text_ex(this.ptr, text, size, spacing);
+      return rl.rl_measure_text_ex_n(this.ptr, text, text.size, size, spacing);
     },
     free = (){ rl.rl_unload_font(this.ptr); }
   };

@@ -1,0 +1,36 @@
+// raylib [core] example - input keys (Disturb port)
+
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0 || system("test -n \"$DISPLAY\"") != 0) {
+  println("core_input_keys skipped (headless environment)");
+}
+else {
+  eval(read("disturb_bindings/raylib.disturb"));
+
+  screenWidth = 800;
+  screenHeight = 450;
+
+  initWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
+
+  ballX = screenWidth / 2;
+  ballY = screenHeight / 2;
+
+  setTargetFPS(60);
+
+  while (shouldClose() == 0) {
+    if (isKeyDown(KEY_RIGHT) == 1) { ballX = ballX + 2; }
+    if (isKeyDown(KEY_LEFT) == 1) { ballX = ballX - 2; }
+    if (isKeyDown(KEY_UP) == 1) { ballY = ballY - 2; }
+    if (isKeyDown(KEY_DOWN) == 1) { ballY = ballY + 2; }
+
+    begin();
+    clear(COLOR_RAYWHITE);
+    drawText("move the ball with arrow keys", 10, 10, 20, COLOR_DARKGRAY);
+    // Main marker (original example uses a circle).
+    drawCircle(ballX, ballY, 50.0, COLOR_RED);
+    // Fallback visible center marker.
+    drawRect(ballX - 8, ballY - 8, 16, 16, COLOR_BLUE);
+    end();
+  }
+
+  closeWindow();
+}

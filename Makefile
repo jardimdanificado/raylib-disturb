@@ -21,7 +21,7 @@ DISTURB_BIN    := $(DISTURB_DIR)/disturb
 # System libs needed by raylib on Linux (X11 desktop)
 RAYLIB_SYSLIBS := -lm -lpthread -ldl -lrt -lX11
 
-.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean deep_clean assets_note run_smoke run_hello run_texture run_texture_stress run_texture_pro run_procedural run_measure_text run_camera2d run_quick_tests run_new_examples
+.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean deep_clean assets_note run_smoke run_hello run_texture run_texture_stress run_texture_pro run_procedural run_measure_text run_camera2d run_quick_tests run_new_examples run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera run_original_examples
 
 all: deps raylib shim disturb $(SHIM_PATH_BIN)
 
@@ -130,6 +130,20 @@ run_quick_tests: all
 	./$(DISTURB_BIN) examples/test_runner.disturb
 
 run_new_examples: run_quick_tests run_procedural run_measure_text
+
+run_core_basic_window: all
+	DISTURB_HEADLESS=1 ./$(DISTURB_BIN) examples/core_basic_window.disturb
+
+run_core_input_keys: all
+	DISTURB_HEADLESS=1 ./$(DISTURB_BIN) examples/core_input_keys.disturb
+
+run_textures_image_loading: all
+	DISTURB_HEADLESS=1 ./$(DISTURB_BIN) examples/textures_image_loading.disturb
+
+run_core_2d_camera: all
+	DISTURB_HEADLESS=1 ./$(DISTURB_BIN) examples/core_2d_camera.disturb
+
+run_original_examples: run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera
 
 assets_note:
 	@echo "Required: assets/test.png (for texture_pro/texture demos)"

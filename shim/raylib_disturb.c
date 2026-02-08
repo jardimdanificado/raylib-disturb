@@ -43,6 +43,15 @@ int rl_init_window(int w, int h, const char *title)
     return 1;
 }
 
+int rl_init_window_n(int w, int h, const char *title, int title_len)
+{
+    char *safe_title = copy_string_n(title, title_len);
+    if (!safe_title) return 0;
+    InitWindow(w, h, safe_title);
+    free(safe_title);
+    return 1;
+}
+
 int rl_window_should_close(void)
 {
     return WindowShouldClose() ? 1 : 0;
@@ -105,6 +114,15 @@ void rl_draw_rectangle(int x, int y, int w, int h, int rgba)
 void rl_draw_text(const char *text, int x, int y, int size, int rgba)
 {
     DrawText(text, x, y, size, rgba_to_color(rgba));
+}
+
+void rl_draw_text_n(const char *text, int text_len,
+                    int x, int y, int size, int rgba)
+{
+    char *safe_text = copy_string_n(text, text_len);
+    if (!safe_text) return;
+    DrawText(safe_text, x, y, size, rgba_to_color(rgba));
+    free(safe_text);
 }
 
 /* ================================================================
@@ -325,6 +343,16 @@ int rl_measure_text(const char *text, int font_size)
     return MeasureText(text, font_size);
 }
 
+int rl_measure_text_n(const char *text, int text_len, int font_size)
+{
+    char *safe_text = copy_string_n(text, text_len);
+    int out = 0;
+    if (!safe_text) return 0;
+    out = MeasureText(safe_text, font_size);
+    free(safe_text);
+    return out;
+}
+
 intptr_t rl_load_font(const char *path)
 {
     Font *f = (Font *)malloc(sizeof(Font));
@@ -361,6 +389,18 @@ int rl_measure_text_ex(intptr_t font, const char *text,
     return (int)sz.x;
 }
 
+int rl_measure_text_ex_n(intptr_t font, const char *text, int text_len,
+                         float font_size, float spacing)
+{
+    Font *f = font_ptr(font);
+    char *safe_text = copy_string_n(text, text_len);
+    int out = 0;
+    if (!f || !safe_text) { free(safe_text); return 0; }
+    out = (int)MeasureTextEx(*f, safe_text, font_size, spacing).x;
+    free(safe_text);
+    return out;
+}
+
 void rl_draw_text_ex(intptr_t font, const char *text,
                      float x, float y, float font_size,
                      float spacing, int rgba)
@@ -369,6 +409,18 @@ void rl_draw_text_ex(intptr_t font, const char *text,
     if (!f) return;
     Vector2 pos = { x, y };
     DrawTextEx(*f, text, pos, font_size, spacing, rgba_to_color(rgba));
+}
+
+void rl_draw_text_ex_n(intptr_t font, const char *text, int text_len,
+                       float x, float y, float font_size,
+                       float spacing, int rgba)
+{
+    Font *f = font_ptr(font);
+    char *safe_text = copy_string_n(text, text_len);
+    if (!f || !safe_text) { free(safe_text); return; }
+    Vector2 pos = { x, y };
+    DrawTextEx(*f, safe_text, pos, font_size, spacing, rgba_to_color(rgba));
+    free(safe_text);
 }
 
 /* ================================================================

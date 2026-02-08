@@ -48,6 +48,11 @@ make run_measure_text   # measureText visual check
 make run_camera2d       # Camera2D pan/zoom demo
 make run_quick_tests    # Headless quick checks (packing/pixels)
 make run_new_examples   # Quick test + procedural + measureText
+make run_core_basic_window     # raylib core_basic_window port
+make run_core_input_keys       # raylib core_input_keys port
+make run_textures_image_loading # raylib textures_image_loading port
+make run_core_2d_camera        # raylib core_2d_camera port
+make run_original_examples     # Run all official example ports
 ```
 
 `make run_hello` sets `DISTURB_HEADLESS=1` to keep CI/headless environments deterministic.
@@ -61,6 +66,7 @@ cp /path/to/your/image.png assets/test.png
 ```
 
 `make run_texture_stress` exits gracefully with instructions if `assets/test.png` is missing.
+`make run_textures_image_loading` also requires `assets/test.png`.
 
 Optional font demo asset:
 

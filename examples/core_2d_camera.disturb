@@ -1,0 +1,66 @@
+// raylib [core] example - 2d camera (Disturb port)
+// Adapted to currently available wrapper drawing primitives.
+
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0 || system("test -n \"$DISPLAY\"") != 0) {
+  println("core_2d_camera skipped (headless environment)");
+}
+else {
+  eval(read("disturb_bindings/raylib.disturb"));
+
+  screenWidth = 800;
+  screenHeight = 450;
+
+  initWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera");
+
+  playerX = 0.0;
+  playerY = 0.0;
+  camRot = 0.0;
+  camZoom = 1.0;
+
+  cam = createCamera2D(screenWidth / 2.0, screenHeight / 2.0, playerX, playerY, camRot, camZoom);
+
+  setTargetFPS(60);
+
+  while (shouldClose() == 0) {
+    if (isKeyDown(KEY_RIGHT) == 1) { playerX = playerX + 2.0; }
+    if (isKeyDown(KEY_LEFT) == 1) { playerX = playerX - 2.0; }
+
+    if (isKeyDown(KEY_A) == 1) { camRot = camRot - 1.0; }
+    if (isKeyDown(KEY_S) == 1) { camRot = camRot + 1.0; }
+    if (camRot > 40.0) { camRot = 40.0; }
+    if (camRot < -40.0) { camRot = -40.0; }
+
+    camZoom = camZoom + (mouseWheel() * 0.1);
+    if (camZoom < 0.1) { camZoom = 0.1; }
+    if (camZoom > 3.0) { camZoom = 3.0; }
+
+    cam.set(screenWidth / 2.0, screenHeight / 2.0, playerX + 20.0, playerY + 20.0, camRot, camZoom);
+
+    begin();
+    clear(COLOR_RAYWHITE);
+
+    cam.begin();
+    drawRect(-3000, 300, 6000, 1200, COLOR_DARKGRAY);
+
+    for (x = -1200; x <= 1200; x = x + 200) {
+      drawLine(x, -800, x, 800, COLOR_LIGHTGRAY);
+    }
+    for (y = -800; y <= 800; y = y + 200) {
+      drawLine(-1200, y, 1200, y, COLOR_LIGHTGRAY);
+    }
+
+    drawRect(playerX, playerY, 40, 40, COLOR_RED);
+    drawLine(playerX + 20, -900, playerX + 20, 900, COLOR_GREEN);
+    drawLine(-1300, playerY + 20, 1300, playerY + 20, COLOR_GREEN);
+    cam.end();
+
+    drawText("Free 2D camera controls:", 20, 20, 20, COLOR_BLACK);
+    drawText("- Right/Left to move player", 40, 50, 18, COLOR_DARKGRAY);
+    drawText("- Mouse Wheel to Zoom in-out", 40, 76, 18, COLOR_DARKGRAY);
+    drawText("- A / S to Rotate", 40, 102, 18, COLOR_DARKGRAY);
+    end();
+  }
+
+  cam.free();
+  closeWindow();
+}

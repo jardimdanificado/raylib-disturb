@@ -9,6 +9,7 @@ extern "C" {
 
 /* Window / timing */
 int   rl_init_window(int w, int h, const char *title);
+int   rl_init_window_n(int w, int h, const char *title, int title_len);
 int   rl_window_should_close(void);
 void  rl_begin_drawing(void);
 void  rl_end_drawing(void);
@@ -23,6 +24,8 @@ void  rl_draw_line(int x1, int y1, int x2, int y2, int rgba);
 void  rl_draw_circle(int cx, int cy, float r, int rgba);
 void  rl_draw_rectangle(int x, int y, int w, int h, int rgba);
 void  rl_draw_text(const char *text, int x, int y, int size, int rgba);
+void  rl_draw_text_n(const char *text, int text_len,
+                     int x, int y, int size, int rgba);
 
 /* Input (polling) */
 int   rl_is_key_down(int key);
@@ -60,14 +63,20 @@ void     rl_update_texture_rgba8(intptr_t tex, intptr_t pixels, int pixel_count)
 
 /* C) Text measurement + custom fonts */
 int      rl_measure_text(const char *text, int font_size);
+int      rl_measure_text_n(const char *text, int text_len, int font_size);
 intptr_t rl_load_font(const char *path);
 intptr_t rl_load_font_n(const char *path, int path_len);
 void     rl_unload_font(intptr_t font);
 int      rl_measure_text_ex(intptr_t font, const char *text,
                             float font_size, float spacing);
+int      rl_measure_text_ex_n(intptr_t font, const char *text, int text_len,
+                              float font_size, float spacing);
 void     rl_draw_text_ex(intptr_t font, const char *text,
                          float x, float y, float font_size,
                          float spacing, int rgba);
+void     rl_draw_text_ex_n(intptr_t font, const char *text, int text_len,
+                           float x, float y, float font_size,
+                           float spacing, int rgba);
 
 /* D) 2D camera */
 intptr_t rl_camera2d_create(float offset_x, float offset_y,
