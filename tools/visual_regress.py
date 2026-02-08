@@ -64,6 +64,7 @@ def patch_c_source(c_source: str, name: str, frames: int, out_png_path: str) -> 
 
     # Normalize the screenshot output path for C string
     out_png_c = out_png_path.replace("\\", "/")
+    src = re.sub(r"\s*DrawFPS\([^)]*\);", "", src)
 
     # 1. Add frame counter before the while loop
     src = re.sub(

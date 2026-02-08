@@ -1,0 +1,42 @@
+// Visual regression: deterministic 2D camera transform test.
+// Window: 800x450, fixed world geometry with Camera2D offset/target.
+
+eval(read("generated/raylib_ffi_phase3.dist"));
+
+RAYWHITE  = 0xF5F5F5FF;
+DARKGRAY  = 0x505050FF;
+LIGHTGRAY = 0xC8C8C8FF;
+GRAY      = 0x828282FF;
+RED       = 3861460991; // 0xE62937FF
+GREEN     = 14954751; // 0x00E430FF
+
+frames = 120;
+output = "out/disturb/core_2d_camera_simple.png";
+
+raylib_phase3.rl2_InitWindow(800, 450, "raylib [core] example - 2d camera simple");
+raylib_phase3.rl2_SetTargetFPS(60);
+
+cam = raylib_phase3.rl_create_camera2d(400.0, 225.0, 200.0, 200.0, 0.0, 1.0);
+
+rf = 0;
+while (raylib_phase3.rl2_WindowShouldClose() == 0 && rf < frames) {
+  raylib_phase3.rl2_BeginDrawing();
+  raylib_phase3.rl2_ClearBackground(RAYWHITE);
+
+  raylib_phase3.rl2_BeginMode2D(cam);
+  raylib_phase3.rl2_DrawRectangle(-600, 320, 1300, 800, DARKGRAY);
+  raylib_phase3.rl2_DrawRectangle(80, 120, 120, 200, LIGHTGRAY);
+  raylib_phase3.rl2_DrawRectangle(260, 60, 160, 260, GRAY);
+  raylib_phase3.rl2_DrawRectangle(480, 180, 100, 140, LIGHTGRAY);
+  raylib_phase3.rl2_DrawRectangle(180, 260, 40, 40, RED);
+  raylib_phase3.rl2_DrawLine(200, -2000, 200, 2000, GREEN);
+  raylib_phase3.rl2_DrawLine(-2000, 200, 2000, 200, GREEN);
+  raylib_phase3.rl2_EndMode2D();
+
+  raylib_phase3.rl2_EndDrawing();
+  rf = rf + 1;
+}
+
+raylib_phase3.rl2_TakeScreenshot(output);
+cam = raylib_phase3.rl_destroy_camera2d(cam);
+raylib_phase3.rl2_CloseWindow();

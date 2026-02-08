@@ -6,20 +6,20 @@ name = "textures_logo_raylib";
 if (port_has_display() == 0) {
   port_skip(name, "headless environment");
 }
+else if (port_has_asset("raylib/examples/textures/resources/raylib_logo.png") == 0) {
+  port_skip(name, "missing raylib logo asset");
+}
 else {
-  img = raylib_phase3.rl2_GenImageColor(256, 256, PORT_RAYWHITE);
-  raylib_phase3.rl2_ImageColorTint(img, PORT_ORANGE);
-  tex = raylib_phase3.rl2_LoadTextureFromImage(img);
-  raylib_phase3.rl2_UnloadImage(img);
-
   port_window_begin(800, 450, "raylib textures: logo raylib");
+  // Texture load must happen after InitWindow (OpenGL context required).
+  tex = raylib_phase3.rl2_LoadTexture("raylib/examples/textures/resources/raylib_logo.png");
   frame = 0;
   while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
     frame = frame + 1;
     raylib_phase3.rl2_BeginDrawing();
     raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
-    raylib_phase3.rl2_DrawTexture(tex, 272, 96, PORT_WHITE);
-    raylib_phase3.rl2_DrawText("generated logo-like texture", 260, 370, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_DrawTexture(tex, 272, 97, PORT_WHITE);
+    raylib_phase3.rl2_DrawText("this IS a texture!", 360, 370, 10, PORT_GRAY);
     raylib_phase3.rl2_EndDrawing();
   }
 

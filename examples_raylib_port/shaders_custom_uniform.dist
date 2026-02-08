@@ -6,19 +6,33 @@ name = "shaders_custom_uniform";
 if (port_has_display() == 0) {
   port_skip(name, "headless environment");
 }
+else if (port_has_asset("raylib/examples/shaders/resources/shaders/glsl330/swirl.fs") == 0) {
+  port_skip(name, "missing shader asset");
+}
 else {
-  // Uses empty paths to request default shader behavior from raylib.
-  shader = raylib_phase3.rl2_LoadShader("", "");
   port_window_begin(800, 450, "raylib shaders: custom uniform");
+  // Shader load must happen after InitWindow (OpenGL context required).
+  shader = raylib_phase3.rl2_LoadShader(
+    "",
+    "raylib/examples/shaders/resources/shaders/glsl330/swirl.fs"
+  );
+  centerLoc = raylib_phase3.rl2_GetShaderLocation(shader, "center");
+  center = [0.0];
+  center.size = 2;
   frame = 0;
   while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
     frame = frame + 1;
+    center[0] = 400.0;
+    center[1] = 225.0;
+    raylib_phase3.rl2_SetShaderValue(shader, centerLoc, center, 1);
+
     raylib_phase3.rl2_BeginDrawing();
     raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
     raylib_phase3.rl2_BeginShaderMode(shader);
-    raylib_phase3.rl2_DrawRectangle(240, 140, 320, 160, PORT_PURPLE);
+    raylib_phase3.rl2_DrawCircle(400, 225, 110.0, PORT_PURPLE);
+    raylib_phase3.rl2_DrawRectangle(260, 170, 280, 110, PORT_SKYBLUE);
     raylib_phase3.rl2_EndShaderMode();
-    raylib_phase3.rl2_DrawText("shader mode active", 300, 320, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_DrawText("shader mode + custom uniform", 250, 340, 20, PORT_DARKGRAY);
     raylib_phase3.rl2_EndDrawing();
   }
   raylib_phase3.rl2_UnloadShader(shader);

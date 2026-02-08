@@ -10,13 +10,14 @@ else if (port_has_asset("assets/test.png") == 0) {
   port_skip(name, "missing asset assets/test.png");
 }
 else {
+  port_window_begin(800, 450, "raylib textures: image processing");
+
   img = raylib_phase3.rl2_LoadImage("assets/test.png");
   raylib_phase3.rl2_ImageFlipVertical(img);
   raylib_phase3.rl2_ImageColorTint(img, PORT_SKYBLUE);
   tex = raylib_phase3.rl2_LoadTextureFromImage(img);
   raylib_phase3.rl2_UnloadImage(img);
 
-  port_window_begin(800, 450, "raylib textures: image processing");
   frame = 0;
   while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
     frame = frame + 1;

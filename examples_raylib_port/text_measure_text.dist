@@ -16,6 +16,10 @@ if (port_has_display() == 0) {
 else {
   msg = "measure me";
   size = raylib_phase3.rl2_MeasureText(msg, 40);
+  if (size <= 0) {
+    // Fallback for environments where default font metrics are unavailable.
+    size = raylib_phase3.rl2_TextLength(msg) * 20;
+  }
 
   port_window_begin(800, 450, "raylib text: measure text");
   frame = 0;

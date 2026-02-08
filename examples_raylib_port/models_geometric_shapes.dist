@@ -8,19 +8,35 @@ if (port_has_display() == 0) {
 }
 else {
   port_window_begin(800, 450, "raylib models: geometric shapes");
+  cam = raylib_phase3.rl_create_camera3d(
+    0.0, 10.0, 10.0,
+    0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    45.0, 0
+  );
   frame = 0;
   while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
     frame = frame + 1;
     raylib_phase3.rl2_BeginDrawing();
     raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
-    raylib_phase3.rl2_BeginMode3D(0);
-    raylib_phase3.rl2_DrawCube(-1.5, 0.0, 0.0, 1.5, 1.5, 1.5, PORT_RED);
-    raylib_phase3.rl2_DrawSphere(1.5, 0.0, 0.0, 1.0, PORT_GREEN);
-    raylib_phase3.rl2_DrawGrid(12, 1.0);
+    raylib_phase3.rl2_BeginMode3D(cam);
+    raylib_phase3.rl2_DrawCube(-4.0, 0.0, 2.0, 2.0, 5.0, 2.0, PORT_RED);
+    raylib_phase3.rl2_DrawCubeWires(-4.0, 0.0, 2.0, 2.0, 5.0, 2.0, PORT_GOLD);
+    raylib_phase3.rl2_DrawCubeWires(-4.0, 0.0, -2.0, 3.0, 6.0, 2.0, PORT_MAROON);
+    raylib_phase3.rl2_DrawSphere(-1.0, 0.0, -2.0, 1.0, PORT_GREEN);
+    raylib_phase3.rl2_DrawSphereWires(1.0, 0.0, 2.0, 2.0, 16, 16, PORT_LIME);
+    raylib_phase3.rl2_DrawCylinder(4.0, 0.0, -2.0, 1.0, 2.0, 3.0, 4, PORT_SKYBLUE);
+    raylib_phase3.rl2_DrawCylinderWires(4.0, 0.0, -2.0, 1.0, 2.0, 3.0, 4, PORT_DARKBLUE);
+    raylib_phase3.rl2_DrawCylinderWires(4.5, -1.0, 2.0, 1.0, 1.0, 2.0, 6, PORT_BROWN);
+    raylib_phase3.rl2_DrawCylinder(1.0, 0.0, -4.0, 0.0, 1.5, 3.0, 8, PORT_GOLD);
+    raylib_phase3.rl2_DrawCylinderWires(1.0, 0.0, -4.0, 0.0, 1.5, 3.0, 8, PORT_PINK);
+    raylib_phase3.rl2_DrawCapsule(-3.0, 1.5, -4.0, -4.0, -1.0, -4.0, 1.2, 8, 8, PORT_VIOLET);
+    raylib_phase3.rl2_DrawCapsuleWires(-3.0, 1.5, -4.0, -4.0, -1.0, -4.0, 1.2, 8, 8, PORT_PURPLE);
+    raylib_phase3.rl2_DrawGrid(10, 1.0);
     raylib_phase3.rl2_EndMode3D();
-    raylib_phase3.rl2_DrawText("models geometric primitives", 20, 20, 20, PORT_DARKGRAY);
     raylib_phase3.rl2_EndDrawing();
   }
+  cam = raylib_phase3.rl_destroy_camera3d(cam);
   port_window_end();
   port_pass(name);
 }

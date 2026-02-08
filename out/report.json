@@ -1,47 +1,47 @@
 [
   {
     "name": "core_basic_window",
-    "status": "PASS",
-    "tier": 1,
-    "pixel_equal": 1.0,
-    "mae": 0.0,
-    "ssim": 1.0,
-    "reason": null
+    "status": "SKIP",
+    "reason": "C execution failed"
   },
   {
     "name": "shapes_logo_raylib",
-    "status": "PASS",
-    "tier": 1,
-    "pixel_equal": 1.0,
-    "mae": 0.0,
-    "ssim": 1.0,
-    "reason": null
+    "status": "SKIP",
+    "reason": "C execution failed"
   },
   {
     "name": "shapes_basic_shapes",
-    "status": "PASS",
-    "tier": 1,
-    "pixel_equal": 1.0,
-    "mae": 0.0,
-    "ssim": 1.0,
-    "reason": null
+    "status": "SKIP",
+    "reason": "C execution failed"
   },
   {
     "name": "textures_logo_raylib",
-    "status": "PASS",
-    "tier": 1,
-    "pixel_equal": 1.0,
-    "mae": 0.0,
-    "ssim": 1.0,
-    "reason": null
+    "status": "SKIP",
+    "reason": "C execution failed"
   },
   {
     "name": "shapes_colors_palette",
-    "status": "PASS",
-    "tier": 1,
-    "pixel_equal": 0.972475,
-    "mae": 1.613,
-    "ssim": 0.988043,
-    "reason": null
+    "status": "SKIP",
+    "reason": "C execution failed"
+  },
+  {
+    "name": "core_3d_camera_mode",
+    "status": "SKIP",
+    "reason": "C execution failed"
+  },
+  {
+    "name": "models_geometric_shapes",
+    "status": "SKIP",
+    "reason": "C execution failed"
+  },
+  {
+    "name": "shapes_logo_raylib_anim",
+    "status": "SKIP",
+    "reason": "C execution failed"
+  },
+  {
+    "name": "core_2d_camera_simple",
+    "status": "SKIP",
+    "reason": "C execution failed"
   }
 ]

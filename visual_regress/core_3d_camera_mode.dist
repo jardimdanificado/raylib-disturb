@@ -1,0 +1,42 @@
+// Visual regression: faithful translation of raylib/examples/core/core_3d_camera_mode.c
+// Window: 800x450, simple 3D scene with fixed camera, no assets, no input.
+
+eval(read("generated/raylib_ffi_phase3.dist"));
+
+RAYWHITE = 0xF5F5F5FF;
+DARKGRAY = 0x505050FF;
+RED      = 3861460991; // 0xE62937FF
+MAROON   = 3189848063; // 0xBE2137FF
+
+frames = 120;
+output = "out/disturb/core_3d_camera_mode.png";
+
+raylib_phase3.rl2_InitWindow(800, 450, "raylib [core] example - 3d camera mode");
+raylib_phase3.rl2_SetTargetFPS(60);
+
+cam = raylib_phase3.rl_create_camera3d(
+  0.0, 10.0, 10.0,
+  0.0, 0.0, 0.0,
+  0.0, 1.0, 0.0,
+  45.0, 0
+);
+
+rf = 0;
+while (raylib_phase3.rl2_WindowShouldClose() == 0 && rf < frames) {
+  raylib_phase3.rl2_BeginDrawing();
+  raylib_phase3.rl2_ClearBackground(RAYWHITE);
+
+  raylib_phase3.rl2_BeginMode3D(cam);
+  raylib_phase3.rl2_DrawCube(0.0, 0.0, 0.0, 2.0, 2.0, 2.0, RED);
+  raylib_phase3.rl2_DrawCubeWires(0.0, 0.0, 0.0, 2.0, 2.0, 2.0, MAROON);
+  raylib_phase3.rl2_DrawGrid(10, 1.0);
+  raylib_phase3.rl2_EndMode3D();
+
+  raylib_phase3.rl2_DrawText("Welcome to the third dimension!", 10, 40, 20, DARKGRAY);
+  raylib_phase3.rl2_EndDrawing();
+  rf = rf + 1;
+}
+
+raylib_phase3.rl2_TakeScreenshot(output);
+cam = raylib_phase3.rl_destroy_camera3d(cam);
+raylib_phase3.rl2_CloseWindow();
