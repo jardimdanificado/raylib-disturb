@@ -1,0 +1,23 @@
+// raylib [audio] example - sound loading (Disturb port)
+// Source: audio/audio_sound_loading.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "audio_sound_loading";
+if (port_has_asset("assets/test.wav") == 0) {
+  port_skip(name, "missing asset assets/test.wav");
+}
+else {
+  raylib_phase3.rl2_InitAudioDevice();
+  if (raylib_phase3.rl2_IsAudioDeviceReady() == 0) {
+    raylib_phase3.rl2_CloseAudioDevice();
+    port_skip(name, "audio device unavailable");
+  }
+  else {
+    snd = raylib_phase3.rl2_LoadSound("assets/test.wav");
+    raylib_phase3.rl2_PlaySound(snd);
+    raylib_phase3.rl2_WaitTime(0.25);
+    raylib_phase3.rl2_UnloadSound(snd);
+    raylib_phase3.rl2_CloseAudioDevice();
+    port_pass(name);
+  }
+}

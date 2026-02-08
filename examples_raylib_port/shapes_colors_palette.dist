@@ -1,0 +1,38 @@
+// raylib [shapes] example - colors palette (Disturb port)
+// Source: shapes/shapes_colors_palette.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "shapes_colors_palette";
+if (port_has_display() == 0) {
+  cv = beginOffscreenColor(180, 110, PORT_RAYWHITE);
+  offscreenDrawRect(cv, 20, 30, 16, 16, PORT_RED);
+  offscreenDrawRect(cv, 40, 30, 16, 16, PORT_ORANGE);
+  offscreenDrawRect(cv, 60, 30, 16, 16, PORT_YELLOW);
+  offscreenDrawRect(cv, 80, 30, 16, 16, PORT_GREEN);
+  offscreenDrawRect(cv, 100, 30, 16, 16, PORT_BLUE);
+  offscreenDrawRect(cv, 120, 30, 16, 16, PORT_PURPLE);
+  ok = 0;
+  if (assertPixelEquals(name, cv, 22, 32, PORT_RED) == 1) {
+    if (assertPixelEquals(name, cv, 102, 32, PORT_BLUE) == 1) { ok = 1; }
+  }
+  if (ok == 1) { port_pass_headless(name); }
+}
+else {
+  port_window_begin(800, 450, "raylib shapes: colors palette");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawRectangle(120, 140, 80, 80, PORT_RED);
+    raylib_phase3.rl2_DrawRectangle(220, 140, 80, 80, PORT_ORANGE);
+    raylib_phase3.rl2_DrawRectangle(320, 140, 80, 80, PORT_YELLOW);
+    raylib_phase3.rl2_DrawRectangle(420, 140, 80, 80, PORT_GREEN);
+    raylib_phase3.rl2_DrawRectangle(520, 140, 80, 80, PORT_BLUE);
+    raylib_phase3.rl2_DrawRectangle(620, 140, 80, 80, PORT_PURPLE);
+    raylib_phase3.rl2_DrawText("basic raylib palette", 280, 250, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass_windowed(name);
+}

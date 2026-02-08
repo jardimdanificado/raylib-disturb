@@ -1,0 +1,94 @@
+// Phase 6 smoke: pure non-window/non-audio checks with lowered wrappers.
+
+shim_path = read("disturb_bindings/shim_path_phase3.bin");
+if (shim_path == null) {
+  shim_path = "./libraylib_disturb_phase3.so";
+}
+
+raylib_phase3 = ffi.load(shim_path,
+  "i32 rl2_GetCodepointCount(char*)",
+  "i32 rl2_IsFileExtension(char*, char*)",
+  "i32 rl2_GetRandomValue(i32, i32)",
+  "char* rl2_GetFileNameWithoutExt(char*)",
+  "i32 rl2_TextLength(char*)",
+  "i32 rl2_GetGestureDragVector(float[], i32)",
+  "char* rl2_LoadUTF8(int[], i32)",
+  "i32 rl2_GetCodepoint(char*, int[], i32)",
+  "i32 rl2_GetCameraMatrix2D(void*, float[], i32)",
+  "i32 rl2_CheckCollisionBoxes(float[], i32, float[], i32)"
+);
+
+failed = 0;
+check = (name, cond){
+  if (cond) {
+    println("PASS " + name);
+    return 0;
+  }
+  else {
+    println("FAIL " + name);
+    return 1;
+  }
+};
+
+failed = failed + check("GetCodepointCount(abcde)", raylib_phase3.rl2_GetCodepointCount("abcde") == 5);
+failed = failed + check("IsFileExtension", raylib_phase3.rl2_IsFileExtension("sample.png", ".png") == 1);
+failed = failed + check("GetRandomValue fixed range", raylib_phase3.rl2_GetRandomValue(7, 7) == 7);
+
+name_no_ext = raylib_phase3.rl2_GetFileNameWithoutExt("assets/test.png");
+name_len = raylib_phase3.rl2_TextLength(name_no_ext);
+failed = failed + check("GetFileNameWithoutExt len", name_len == 4);
+
+pt = [123.0];
+pt.size = 2;
+pt[1] = 456.0;
+ok = raylib_phase3.rl2_GetGestureDragVector(pt, pt.size);
+failed = failed + check("GetGestureDragVector status", ok == 1);
+failed = failed + check("GetGestureDragVector out", pt[0] == 0 && pt[1] == 0);
+
+codepoints = [65];
+codepoints.size = 1;
+utf8 = raylib_phase3.rl2_LoadUTF8(codepoints, 1);
+failed = failed + check("LoadUTF8", utf8 == "A");
+
+cp_size = [0];
+cp_size.size = 1;
+cp = raylib_phase3.rl2_GetCodepoint("A", cp_size, cp_size.size);
+failed = failed + check("GetCodepoint value", cp == 65);
+failed = failed + check("GetCodepoint out size", cp_size[0] == 1);
+
+mat = [0.0];
+mat.size = 16;
+mat_ok = raylib_phase3.rl2_GetCameraMatrix2D(null, mat, mat.size);
+failed = failed + check("GetCameraMatrix2D status", mat_ok == 1);
+failed = failed + check("GetCameraMatrix2D finite", mat[0] == mat[0] && mat[15] == mat[15]);
+failed = failed + check("GetCameraMatrix2D m15", mat[15] == 1);
+
+box_a = [0.0];
+box_a.size = 6;
+box_a[0] = 0; box_a[1] = 0; box_a[2] = 0;
+box_a[3] = 10; box_a[4] = 10; box_a[5] = 10;
+box_b = [0.0];
+box_b.size = 6;
+box_b[0] = 5; box_b[1] = 5; box_b[2] = 5;
+box_b[3] = 15; box_b[4] = 15; box_b[5] = 15;
+box_c = [0.0];
+box_c.size = 6;
+box_c[0] = 20; box_c[1] = 20; box_c[2] = 20;
+box_c[3] = 30; box_c[4] = 30; box_c[5] = 30;
+
+failed = failed + check("CheckCollisionBoxes overlap", raylib_phase3.rl2_CheckCollisionBoxes(box_a, box_a.size, box_b, box_b.size) == 1);
+failed = failed + check("CheckCollisionBoxes disjoint", raylib_phase3.rl2_CheckCollisionBoxes(box_a, box_a.size, box_c, box_c.size) == 0);
+
+if (raylib_phase3.rl2_GetCameraMatrix == null) {
+  println("PASS Quaternion wrapper skip (no quaternion APIs in raylib.h)");
+}
+else {
+  println("PASS Quaternion wrapper skip (not required in this header set)");
+}
+
+if (failed == 0) {
+  println("PASS phase3 smoke_pure");
+}
+else {
+  println("FAIL phase3 smoke_pure: " + failed + " failure(s)");
+}

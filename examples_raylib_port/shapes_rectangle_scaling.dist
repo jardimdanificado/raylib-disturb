@@ -1,0 +1,31 @@
+// raylib [shapes] example - rectangle scaling (Disturb port)
+// Source: shapes/shapes_rectangle_scaling.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "shapes_rectangle_scaling";
+if (port_has_display() == 0) {
+  port_skip(name, "headless environment");
+}
+else {
+  port_window_begin(800, 450, "raylib shapes: rectangle scaling");
+  w = 120;
+  h = 80;
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    if (raylib_phase3.rl2_IsMouseButtonDown(PORT_MOUSE_LEFT_BUTTON) == 1) {
+      w = w + 1;
+      h = h + 1;
+    }
+    if (w > 280) { w = 120; h = 80; }
+
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawRectangle(400 - (w / 2), 225 - (h / 2), w, h, PORT_SKYBLUE);
+    raylib_phase3.rl2_DrawRectangleLines(400 - (w / 2), 225 - (h / 2), w, h, PORT_BLUE);
+    raylib_phase3.rl2_DrawText("hold mouse-left to scale", 20, 20, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass(name);
+}

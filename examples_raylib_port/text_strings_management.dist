@@ -1,0 +1,22 @@
+// raylib [text] example - strings management (Disturb port)
+// Source: text/text_strings_management.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "text_strings_management";
+
+len = raylib_phase3.rl2_TextLength("disturb");
+idx = raylib_phase3.rl2_TextFindIndex("raylib-disturb", "disturb");
+
+ok = 0;
+if (len == 7) {
+  if (idx >= 0) {
+    ok = 1;
+  }
+}
+
+if (ok == 1) {
+  port_pass(name);
+}
+else {
+  port_fail(name, "string ops returned unexpected values");
+}

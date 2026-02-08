@@ -1,0 +1,32 @@
+// raylib [textures] example - background scrolling (Disturb port)
+// Source: textures/textures_background_scrolling.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "textures_background_scrolling";
+if (port_has_display() == 0) {
+  port_skip(name, "headless environment");
+}
+else if (port_has_asset("assets/test.png") == 0) {
+  port_skip(name, "missing asset assets/test.png");
+}
+else {
+  port_window_begin(800, 450, "raylib textures: background scrolling");
+  tex = raylib_phase3.rl2_LoadTexture("assets/test.png");
+  scroll = 0;
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    scroll = scroll - 2;
+    if (scroll < -800) { scroll = 0; }
+
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_BLACK);
+    raylib_phase3.rl2_DrawTexture(tex, scroll, 60, PORT_WHITE);
+    raylib_phase3.rl2_DrawTexture(tex, scroll + 800, 60, PORT_WHITE);
+    raylib_phase3.rl2_DrawText("background scrolling demo", 250, 20, 20, PORT_RAYWHITE);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  raylib_phase3.rl2_UnloadTexture(tex);
+  port_window_end();
+  port_pass(name);
+}

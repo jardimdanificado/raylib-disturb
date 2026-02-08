@@ -1,0 +1,32 @@
+// raylib [core] example - random values (Disturb port)
+
+eval(read("examples_raylib_port/common.dist"));
+name = "core_random_values";
+if (port_has_display() == 0) {
+  cv = beginOffscreenColor(180, 100, PORT_RAYWHITE);
+  current = raylib_phase3.rl2_GetRandomValue(-8, 5);
+  bar_w = 10 + (current + 8);
+  offscreenDrawRect(cv, 20, 40, bar_w, 12, PORT_MAROON);
+  ok = 0;
+  if (current >= -8 && current <= 5) {
+    if (assertPixelNotEquals(name, cv, 22, 42, PORT_RAYWHITE) == 1) { ok = 1; }
+  }
+  if (ok == 1) { port_pass_headless(name); }
+  else { port_fail(name, "random value out of range"); }
+}
+else {
+  port_window_begin(640, 360, "raylib core: random values");
+  current = 0;
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 180) {
+    frame = frame + 1;
+    if ((frame % 30) == 0) { current = raylib_phase3.rl2_GetRandomValue(-8, 5); }
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawText("Random value every 0.5s", 120, 80, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_DrawText("value = " + current, 240, 160, 32, PORT_MAROON);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass_windowed(name);
+}

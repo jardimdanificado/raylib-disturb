@@ -1,0 +1,13 @@
+// Phase 3 smoke: load ffi and call a simple function.
+
+shim_path = read("disturb_bindings/shim_path_phase3.bin");
+if (shim_path == null) {
+  shim_path = "./libraylib_disturb_phase3.so";
+}
+
+raylib_phase3 = ffi.load(shim_path,
+  "i32 rl2_GetFPS()"
+);
+
+fps = raylib_phase3.rl2_GetFPS();
+println("phase3 smoke_load ok, GetFPS()=" + fps);

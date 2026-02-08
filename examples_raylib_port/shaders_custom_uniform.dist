@@ -1,0 +1,27 @@
+// raylib [shaders] example - custom uniform (Disturb port)
+// Source: shaders/shaders_custom_uniform.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "shaders_custom_uniform";
+if (port_has_display() == 0) {
+  port_skip(name, "headless environment");
+}
+else {
+  // Uses empty paths to request default shader behavior from raylib.
+  shader = raylib_phase3.rl2_LoadShader("", "");
+  port_window_begin(800, 450, "raylib shaders: custom uniform");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_BeginShaderMode(shader);
+    raylib_phase3.rl2_DrawRectangle(240, 140, 320, 160, PORT_PURPLE);
+    raylib_phase3.rl2_EndShaderMode();
+    raylib_phase3.rl2_DrawText("shader mode active", 300, 320, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  raylib_phase3.rl2_UnloadShader(shader);
+  port_window_end();
+  port_pass(name);
+}

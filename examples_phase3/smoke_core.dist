@@ -1,0 +1,24 @@
+// Phase 3 smoke: core window lifecycle functions.
+
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0 || system("test -n \"$DISPLAY\"") != 0 || system("xdpyinfo >/dev/null 2>&1") != 0) {
+  println("phase3 smoke_core skipped (headless environment)");
+}
+else {
+  eval(read("generated/raylib_ffi_phase3.dist"));
+
+  raylib_phase3.rl2_InitWindow(320, 180, "phase3 core");
+  raylib_phase3.rl2_SetTargetFPS(60);
+
+  frame = 0;
+  max_frames = 120;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < max_frames) {
+    frame = frame + 1;
+    fps = raylib_phase3.rl2_GetFPS();
+    if (fps < 0) {
+      println("unexpected fps value: " + fps);
+    }
+  }
+
+  raylib_phase3.rl2_CloseWindow();
+  println("phase3 smoke_core finished");
+}

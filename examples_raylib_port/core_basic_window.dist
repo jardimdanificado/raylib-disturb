@@ -1,0 +1,24 @@
+// raylib [core] example - basic window (Disturb port)
+
+eval(read("examples_raylib_port/common.dist"));
+name = "core_basic_window";
+if (port_has_display() == 0) {
+  cv = beginOffscreenColor(160, 90, PORT_RAYWHITE);
+  offscreenDrawText(cv, "window", 10, 20, 10, PORT_LIGHTGRAY);
+  if (assertPixelNotEquals(name, cv, 12, 22, PORT_RAYWHITE) == 1) {
+    port_pass_headless(name);
+  }
+}
+else {
+  port_window_begin(640, 360, "raylib core: basic window");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 180) {
+    frame = frame + 1;
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawText("Congrats! You created your first window!", 70, 170, 20, PORT_LIGHTGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass_windowed(name);
+}

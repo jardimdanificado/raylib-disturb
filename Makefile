@@ -13,6 +13,10 @@ SHIM_SRC       := shim/raylib_disturb.c
 SHIM_HDR       := shim/raylib_disturb.h
 SHIM_SO        := libraylib_disturb.so
 SHIM_PATH_BIN  := disturb_bindings/shim_path.bin
+SHIM3_SRC      := generated/raylib_shim_phase3.c
+SHIM3_HDR      := generated/raylib_shim_phase3.h
+SHIM3_SO       := libraylib_disturb_phase3.so
+SHIM3_PATH_BIN := disturb_bindings/shim_path_phase3.bin
 
 DISTURB_DIR    := disturb
 DISTURB_REPO   ?= https://github.com/jardimdanificado/disturb.git
@@ -21,7 +25,7 @@ DISTURB_BIN    := $(DISTURB_DIR)/disturb
 # System libs needed by raylib on Linux (X11 desktop)
 RAYLIB_SYSLIBS := -lm -lpthread -ldl -lrt -lX11
 
-.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean deep_clean assets_note run_smoke run_hello run_texture run_texture_stress run_texture_pro run_procedural run_measure_text run_camera2d run_quick_tests run_new_examples run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera run_original_examples
+.PHONY: all deps clone raylib_repo disturb_repo raylib shim disturb clean deep_clean assets_note run_smoke run_hello run_texture run_texture_stress run_texture_pro run_procedural run_measure_text run_camera2d run_quick_tests run_new_examples run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera run_original_examples raylib_inventory raylib_phase2 raylib_phase3 shim_phase3 run_phase3_smoke run_phase6_conformance verify_phase3_symbols run_ported_examples clean_phase3
 
 all: deps raylib shim disturb $(SHIM_PATH_BIN)
 
@@ -145,6 +149,48 @@ run_core_2d_camera: all
 
 run_original_examples: run_core_basic_window run_core_input_keys run_textures_image_loading run_core_2d_camera
 
+raylib_inventory: disturb
+	mkdir -p generated
+	python tools/raylib_gen.py
+
+raylib_phase2: raylib_inventory
+	mkdir -p generated
+	python tools/raylib_phase2.py
+
+raylib_phase3: raylib_phase2
+	mkdir -p generated
+	python tools/raylib_phase3.py
+
+shim_phase3: raylib_phase3 raylib
+	$(CC) $(CFLAGS) -shared \
+		-I$(RAYLIB_SRC)/src -Igenerated \
+		$(SHIM3_SRC) \
+		$(RAYLIB_LIB) \
+		$(RAYLIB_SYSLIBS) \
+		-o $(SHIM3_SO)
+	printf './libraylib_disturb_phase3.so\0' > $(SHIM3_PATH_BIN)
+
+run_phase3_smoke: shim_phase3 disturb
+	./$(DISTURB_BIN) examples_phase3/smoke_load.dist
+	./$(DISTURB_BIN) examples_phase3/test_ptr_roundtrip.dist
+	@out="$$(./$(DISTURB_BIN) examples_phase3/smoke_pure.dist 2>&1)"; \
+	echo "$$out"; \
+	if printf "%s\n" "$$out" | rg -q "(^FAIL |ffi\\.load failed|bytecode error|unknown native)"; then exit 1; fi
+	./$(DISTURB_BIN) examples_phase3/smoke_core.dist
+	./$(DISTURB_BIN) examples_phase3/smoke_draw.dist
+	./$(DISTURB_BIN) examples_phase3/smoke_text.dist
+	./$(DISTURB_BIN) examples_phase3/smoke_texture.dist
+	./$(DISTURB_BIN) examples_phase3/smoke_audio.dist
+
+run_phase6_conformance: shim_phase3 disturb
+	./$(DISTURB_BIN) examples_phase3/conformance_phase6.dist
+
+verify_phase3_symbols: shim_phase3
+	python tools/verify_phase3_symbols.py
+
+run_ported_examples: shim_phase3 disturb
+	./$(DISTURB_BIN) examples_raylib_port/run_all.dist
+
 assets_note:
 	@echo "Required: assets/test.png (for texture_pro/texture demos)"
 	@echo "Optional: assets/font.ttf (for examples/font_ex.disturb)"
@@ -160,3 +206,10 @@ clean:
 deep_clean: clean
 	rm -rf $(RAYLIB_SRC)
 	rm -rf $(DISTURB_DIR)
+
+clean_phase3:
+	rm -f $(SHIM3_SO)
+	rm -f $(SHIM3_PATH_BIN)
+	rm -f generated/raylib_shim_phase3.h
+	rm -f generated/raylib_shim_phase3.c
+	rm -f generated/raylib_ffi_phase3.dist

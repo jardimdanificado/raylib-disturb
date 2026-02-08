@@ -1,0 +1,34 @@
+// raylib [shapes] example - basic shapes (Disturb port)
+// Source: shapes/shapes_basic_shapes.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "shapes_basic_shapes";
+if (port_has_display() == 0) {
+  cv = beginOffscreenColor(180, 110, PORT_RAYWHITE);
+  offscreenDrawCircle(cv, 40, 25, 10, PORT_DARKBLUE);
+  offscreenDrawRect(cv, 20, 50, 40, 20, PORT_RED);
+  offscreenDrawLine(cv, 80, 20, 120, 60, PORT_DARKGRAY);
+  ok = 0;
+  if (assertPixelEquals(name, cv, 40, 25, PORT_DARKBLUE) == 1) {
+    if (assertPixelEquals(name, cv, 25, 55, PORT_RED) == 1) { ok = 1; }
+  }
+  if (ok == 1) { port_pass_headless(name); }
+}
+else {
+  port_window_begin(800, 450, "raylib shapes: basic shapes");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawCircle(200, 120, 35.0, PORT_DARKBLUE);
+    raylib_phase3.rl2_DrawRectangle(100, 180, 120, 60, PORT_RED);
+    raylib_phase3.rl2_DrawRectangleLines(100, 180, 120, 60, PORT_MAROON);
+    raylib_phase3.rl2_DrawLine(340, 80, 500, 220, PORT_DARKGRAY);
+    raylib_phase3.rl2_DrawTriangle(600.0, 80.0, 540.0, 220.0, 660.0, 220.0, PORT_SKYBLUE);
+    raylib_phase3.rl2_DrawText("some basic shapes available", 20, 20, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass_windowed(name);
+}

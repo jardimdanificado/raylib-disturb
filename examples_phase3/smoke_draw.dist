@@ -1,0 +1,32 @@
+// Phase 3 smoke: drawing path with packed color ABI.
+
+if (system("test -n \"$DISTURB_HEADLESS\"") == 0 || system("test -n \"$DISPLAY\"") != 0 || system("xdpyinfo >/dev/null 2>&1") != 0) {
+  println("phase3 smoke_draw skipped (headless environment)");
+}
+else {
+  eval(read("generated/raylib_ffi_phase3.dist"));
+
+  rgba = (r, g, b, a){
+    return ((r & 255) << 24) | ((g & 255) << 16) | ((b & 255) << 8) | (a & 255);
+  };
+
+  COLOR_BG = rgba(245, 245, 245, 255);
+  COLOR_TEXT = rgba(80, 80, 80, 255);
+
+  raylib_phase3.rl2_InitWindow(420, 240, "phase3 draw");
+  raylib_phase3.rl2_SetTargetFPS(60);
+
+  frame = 0;
+  max_frames = 120;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < max_frames) {
+    frame = frame + 1;
+
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(COLOR_BG);
+    raylib_phase3.rl2_DrawText("phase3 draw smoke", 30, 90, 24, COLOR_TEXT);
+    raylib_phase3.rl2_EndDrawing();
+  }
+
+  raylib_phase3.rl2_CloseWindow();
+  println("phase3 smoke_draw finished");
+}

@@ -1,0 +1,29 @@
+// raylib [core] example - mouse wheel (Disturb port)
+// Source: core/core_input_mouse_wheel.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "core_input_mouse_wheel";
+if (port_has_display() == 0) {
+  cv = beginOffscreenColor(200, 120, PORT_RAYWHITE);
+  offscreenDrawRect(cv, 90, 45, 30, 30, PORT_MAROON);
+  if (assertPixelEquals(name, cv, 95, 50, PORT_MAROON) == 1) {
+    port_pass_headless(name);
+  }
+}
+else {
+  port_window_begin(800, 450, "raylib core: input mouse wheel");
+  box_y = 200;
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    wheel = raylib_phase3.rl2_GetMouseWheelMove();
+    box_y = box_y - (wheel * 8);
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawRectangle(350, box_y, 100, 100, PORT_MAROON);
+    raylib_phase3.rl2_DrawText("Use mouse wheel to move the square", 180, 20, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass_windowed(name);
+}

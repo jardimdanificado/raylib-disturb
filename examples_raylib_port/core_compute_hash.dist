@@ -1,0 +1,31 @@
+// raylib [core] example - compute hash (Disturb port)
+// Source: core/core_compute_hash.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "core_compute_hash";
+
+bytes = [0];
+bytes.size = 6;
+bytes[0] = 114;  // r
+bytes[1] = 97;   // a
+bytes[2] = 121;  // y
+bytes[3] = 108;  // l
+bytes[4] = 105;  // i
+bytes[5] = 98;   // b
+
+crc = raylib_phase3.rl2_ComputeCRC32(bytes, bytes.size);
+len = raylib_phase3.rl2_TextLength("raylib");
+
+ok = 0;
+if (crc != 0) {
+  if (len == 6) {
+    ok = 1;
+  }
+}
+
+if (ok == 1) {
+  port_pass(name);
+}
+else {
+  port_fail(name, "unexpected hash or text length result");
+}

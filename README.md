@@ -88,6 +88,20 @@ tools/check_symbols.sh
 
 Prints exported `rl_*` symbols from `./libraylib_disturb.so` using `nm -D` (or `objdump -T` fallback).
 
+### Raylib header inventory + skeleton generation
+
+```bash
+make raylib_inventory
+```
+
+This runs `python tools/raylib_gen.py` and regenerates:
+
+- `tools/raylib_inventory.json`
+- `generated/raylib_shim.h`
+- `generated/raylib_shim.c`
+- `generated/raylib_ffi.dist`
+- `generated/report.md`
+
 ## Project layout
 
 ```

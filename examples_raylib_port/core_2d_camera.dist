@@ -1,0 +1,29 @@
+// raylib [core] example - 2d camera (Disturb port)
+// Source: core/core_2d_camera.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "core_2d_camera";
+if (port_has_display() == 0) {
+  port_skip(name, "headless environment");
+}
+else {
+  // Current ABI has no Camera2D constructor, so use zero-camera placeholder.
+  port_window_begin(800, 450, "raylib core: 2d camera");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    x = 400 + raylib_phase3.rl2_GetRandomValue(-120, 120);
+    y = 225 + raylib_phase3.rl2_GetRandomValue(-90, 90);
+
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_BeginMode2D(0);
+    raylib_phase3.rl2_DrawRectangle(-600, 280, 1200, 260, PORT_DARKGRAY);
+    raylib_phase3.rl2_DrawCircle(x, y, 24, PORT_RED);
+    raylib_phase3.rl2_EndMode2D();
+    raylib_phase3.rl2_DrawText("2D camera placeholder mode", 20, 20, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass(name);
+}

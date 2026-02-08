@@ -1,0 +1,31 @@
+// raylib [core] example - mouse input (Disturb port)
+
+eval(read("examples_raylib_port/common.dist"));
+name = "core_input_mouse";
+if (port_has_display() == 0) {
+  cv = beginOffscreenColor(160, 90, PORT_RAYWHITE);
+  offscreenDrawCircle(cv, 70, 35, 10, PORT_SKYBLUE);
+  if (assertPixelEquals(name, cv, 70, 35, PORT_SKYBLUE) == 1) {
+    port_pass_headless(name);
+  }
+}
+else {
+  r = 30;
+  port_window_begin(640, 360, "raylib core: input mouse");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 180) {
+    frame = frame + 1;
+    w = raylib_phase3.rl2_GetMouseWheelMove();
+    if (w > 0) { r = r + 1; }
+    if (w < 0 && r > 5) { r = r - 1; }
+    mx = raylib_phase3.rl2_GetMouseX();
+    my = raylib_phase3.rl2_GetMouseY();
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawCircle(mx, my, r, PORT_SKYBLUE);
+    raylib_phase3.rl2_DrawText("Move mouse + wheel", 20, 20, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass_windowed(name);
+}

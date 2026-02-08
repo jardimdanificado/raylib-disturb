@@ -1,0 +1,30 @@
+// raylib [core] example - gamepad input (Disturb port)
+// Source: core/core_input_gamepad.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "core_input_gamepad";
+if (port_has_display() == 0) {
+  port_skip(name, "headless environment");
+}
+else {
+  port_window_begin(800, 450, "raylib core: input gamepad");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    has_pad = raylib_phase3.rl2_IsGamepadAvailable(0);
+    axis = raylib_phase3.rl2_GetGamepadAxisMovement(0, 0);
+
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    if (has_pad == 1) {
+      raylib_phase3.rl2_DrawText("Gamepad connected", 280, 120, 24, PORT_GREEN);
+      raylib_phase3.rl2_DrawText("Axis[0] = " + axis, 300, 170, 20, PORT_DARKGRAY);
+    }
+    else {
+      raylib_phase3.rl2_DrawText("No gamepad detected", 280, 140, 24, PORT_MAROON);
+    }
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass(name);
+}

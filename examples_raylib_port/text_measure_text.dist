@@ -1,0 +1,33 @@
+// raylib [text] example - measure text (Disturb port)
+// Source: text/text_rectangle_bounds.c (subset)
+
+eval(read("examples_raylib_port/common.dist"));
+name = "text_measure_text";
+if (port_has_display() == 0) {
+  cv = beginOffscreenColor(180, 110, PORT_RAYWHITE);
+  msg = "measure";
+  size = raylib_phase3.rl2_MeasureText(msg, 20);
+  offscreenDrawText(cv, msg, 10, 30, 12, PORT_VIOLET);
+  ok = 0;
+  if (assertPixelNotEquals(name, cv, 12, 32, PORT_RAYWHITE) == 1) { ok = 1; }
+  if (ok == 1) { port_pass_headless(name); }
+  else { port_fail(name, "text offscreen invariant failed (size=" + size + ")"); }
+}
+else {
+  msg = "measure me";
+  size = raylib_phase3.rl2_MeasureText(msg, 40);
+
+  port_window_begin(800, 450, "raylib text: measure text");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    x = 400 - (size / 2);
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawText(msg, x, 180, 40, PORT_VIOLET);
+    raylib_phase3.rl2_DrawLine(x, 230, x + size, 230, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass_windowed(name);
+}

@@ -1,0 +1,30 @@
+// raylib [shapes] example - triangle strip (Disturb port)
+// Source: shapes/shapes_triangle_strip.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "shapes_triangle_strip";
+if (port_has_display() == 0) {
+  port_skip(name, "headless environment");
+}
+else {
+  pts = [0.0];
+  pts.size = 10;
+  pts[0] = 120.0; pts[1] = 200.0;
+  pts[2] = 200.0; pts[3] = 120.0;
+  pts[4] = 280.0; pts[5] = 220.0;
+  pts[6] = 360.0; pts[7] = 140.0;
+  pts[8] = 440.0; pts[9] = 230.0;
+
+  port_window_begin(800, 450, "raylib shapes: triangle strip");
+  frame = 0;
+  while (raylib_phase3.rl2_WindowShouldClose() == 0 && frame < 120) {
+    frame = frame + 1;
+    raylib_phase3.rl2_BeginDrawing();
+    raylib_phase3.rl2_ClearBackground(PORT_RAYWHITE);
+    raylib_phase3.rl2_DrawTriangleStrip(pts, 5, PORT_PURPLE);
+    raylib_phase3.rl2_DrawText("triangle strip from points", 20, 20, 20, PORT_DARKGRAY);
+    raylib_phase3.rl2_EndDrawing();
+  }
+  port_window_end();
+  port_pass(name);
+}

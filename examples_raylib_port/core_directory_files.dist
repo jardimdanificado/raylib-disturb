@@ -1,0 +1,15 @@
+// raylib [core] example - directory files (Disturb port)
+// Source: core/core_directory_files.c
+
+eval(read("examples_raylib_port/common.dist"));
+name = "core_directory_files";
+
+wd = raylib_phase3.rl2_GetWorkingDirectory();
+ok = raylib_phase3.rl2_TextLength(wd);
+
+if (ok > 0) {
+  port_pass(name);
+}
+else {
+  port_fail(name, "GetWorkingDirectory returned empty string");
+}
